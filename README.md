@@ -1,6 +1,6 @@
 # DSA4213-Project
 
-### Here's a refresher on how to install.
+### Installation guide.
 With Conda, 
 ```shell
 conda env create -f conda_env.yml
