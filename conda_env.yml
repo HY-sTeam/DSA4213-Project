@@ -1,4 +1,4 @@
-name: base
+name: dsa4213
 channels:
   - defaults
 dependencies:
@@ -177,7 +177,7 @@ dependencies:
       - htmlparser==0.0.2
       - httpcore==0.17.3
       - httpx==0.24.1
-      - idna==3.6
+      - idna==2.10
       - importlib-metadata==7.0.1
       - isort==5.13.2
       - lazy-object-proxy==1.10.0
