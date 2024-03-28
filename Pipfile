@@ -8,11 +8,11 @@ mediawikiapi = "*"
 h2ogpte = "*"
 streamlit = "*"
 arxiv = "*"
+jupyter = "*"
 
 [dev-packages]
-mediawikiapi = "*"
-h2ogpte = "*"
 duckduckgo-search = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.11"
