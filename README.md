@@ -1,8 +1,28 @@
 # DSA4213-Project
 
 ### Installation guide.
-Please install anaconda.
-With Conda, 
-```shell
-conda env create -f conda_env.yml --name name
+Install pipenv.
+```sh
+pip install pipenv
+```
+Install the packages in Pipfile.
+```sh
+pipenv install --dev
+```
+
+Whenever you want to install something new, 
+```sh
+pipenv install streamlit
+```
+this will add to Pipfile.
+
+To run the ipynb files, 
+```sh
+pipenv shell
+jupyter notebook
+```
+
+To deactivate python pipenv environment:
+```sh
+exit
 ```
