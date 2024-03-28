@@ -15,3 +15,14 @@ Whenever you want to install something new,
 pipenv install streamlit
 ```
 this will add to Pipfile.
+
+To run the ipynb files, 
+```sh
+pipenv shell
+jupyter notebook
+```
+
+To deactivate python pipenv environment:
+```sh
+exit
+```
