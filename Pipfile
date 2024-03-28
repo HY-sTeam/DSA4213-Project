@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+mediawikiapi = "*"
+h2ogpte = "*"
+streamlit = "*"
+arxiv = "*"
+
+[dev-packages]
+mediawikiapi = "*"
+h2ogpte = "*"
+
+[requires]
+python_version = "3.11"
