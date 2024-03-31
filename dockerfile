@@ -12,7 +12,7 @@ COPY Pipfile Pipfile.lock ./
 
 # Install the dependencies
 RUN pipenv install --deploy
-
+RUN pipenv run pip freeze > requirements.txt
 
 # Copy the rest of the application code to the working directory
 COPY /src /src

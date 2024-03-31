@@ -4,14 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+h2ogpte = "*"
+mediawikiapi = "*"
 requests = "*"
-mediawikiapi = "==1.2"
-h2ogpte = "==1.3.11"
-streamlit = "==1.31.1"
-arxiv = "==2.1.0"
+arxiv = "*"
 jupyter = "*"
+streamlit = "*"
+boto3 = "*"
+black = "*"
+python-pptx = "*"
+streamlit-authenticator = "*"
 
 [dev-packages]
-
-[requires]
-python_version = "3.11"

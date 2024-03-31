@@ -1,3 +1,5 @@
 **/articles/*
 **/presentations/*
 .env
+*.pdf
+**/__pycache__/**
