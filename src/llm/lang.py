@@ -2,7 +2,7 @@ from h2ogpte import H2OGPTE, Session
 import json
 import os
 import re
-import pptx
+
 
 def start_client():
 
@@ -57,13 +57,27 @@ def ingest_files_in_dir(client: H2OGPTE, collection_id, path="src/websearch/temp
     pdf_files = [f"{path}/{file}" for file in all_files if file.endswith('.pdf')]
     all_files = txt_files.copy()
     all_files.extend(pdf_files)
+
     
-    opened_files = [open(file, "rb") for file in all_files]
+    print(all_files)
+    
+    opened_files = [open(file, "rb") for file in all_files if file.endswith(".txt") or file.endswith(".pdf")]
 
     for i in range(len(opened_files)):
         all_files[i] = client.upload(all_files[i], opened_files[i])
         opened_files[i].close()
 
-    client.ingest_uploads(collection_id, all_files)
+    return client.ingest_uploads(collection_id, all_files)
     
 
+if __name__ == "__main__":
+    ## TEST
+    client = H2OGPTE(
+        address="https://h2ogpte.genai.h2o.ai",
+        api_key="sk-HVbr4rwCG4QJPJsQaa7AKiF47jx64RDpAkEWdeQZzwiwlrRU"
+        )
+    col_id = client.create_collection(
+        name='Articles',
+        description='Articles for presentation',
+    )
+    print(ingest_files_in_dir(client, col_id))

@@ -1,7 +1,8 @@
 **/articles/*
 **/presentations/*
 .env
-*.pdf
+
 **/__pycache__/**
-**/temp_results_/**.txt
-**/temp_results_/**.pdf
+*.txt
+*.pdf
+dummy.txt
