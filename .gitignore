@@ -3,4 +3,4 @@
 .env
 *.pdf
 **/__pycache__/**
-**/temp_results_/**
+**/temp_results_/**.txt
