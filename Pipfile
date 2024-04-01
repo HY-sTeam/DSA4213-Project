@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-h2ogpte = "==1.4.9"
+h2ogpte = "==1.4.10"
 mediawikiapi = "*"
 requests = "*"
 arxiv = "*"

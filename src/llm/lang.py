@@ -65,9 +65,12 @@ def ingest_files_in_dir(client: H2OGPTE, collection_id, path="src/websearch/temp
     to_ingest = []
     for file in all_files:
         if file.endswith(".txt") or file.endswith(".pdf"):
-            opened = open(file, "rb")
-            client.upload(file.split("/")[-1], opened)
-            file.close()
+            try:
+                opened = open(file, "rb")
+                client.upload(file.split("/")[-1], opened)
+                file.close()
+            except Exception as e:
+                print(file.split("/")[-1] + e) #
 
     return client.ingest_uploads(collection_id, to_ingest)
     
