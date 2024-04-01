@@ -41,7 +41,7 @@ def main():
             ingest_files_in_dir(client, collection_id)
             st.write("Thinking about design...")
             
-            decide_ppt_colour()
+            #decide_ppt_colour()
 
             status.update(label="Done!", state="complete", expanded=False)
 
