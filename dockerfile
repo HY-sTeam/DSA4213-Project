@@ -2,17 +2,20 @@
 FROM python:3.11.8
 
 # Set the working directory in the container
-WORKDIR /app
+WORKDIR /
 
 # Copy the rest of the application code to the working directory
 COPY . .
 
 # Create the requirements file from the Pipfile.lock
-RUN pip install --no-cache-dir pipenv
 COPY Pipfile Pipfile.lock ./
 
-RUN echo $path
-RUN which streamlit
+# Install dependencies
+RUN pip install --no-cache-dir pipenv==2023.12.1
+RUN pipenv install --deploy
+# RUN pipenv run pip freeze > requirements.txt
+# RUN pip3 install -r requirements.txt
+
 # Expose the port on which the application will run. In this case, streamlit runs on 8501
 EXPOSE 8501
 
