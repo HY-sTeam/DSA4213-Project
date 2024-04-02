@@ -2,7 +2,7 @@
 FROM python:3.11.8
 
 # Set the working directory in the container
-WORKDIR /
+WORKDIR /app
 
 # Copy the rest of the application code to the working directory
 COPY . .
@@ -11,9 +11,8 @@ COPY . .
 RUN pip install --no-cache-dir pipenv
 COPY Pipfile Pipfile.lock ./
 
-# Install the dependencies
-RUN pipenv install --dev
-
+RUN echo $path
+RUN which streamlit
 # Expose the port on which the application will run. In this case, streamlit runs on 8501
 EXPOSE 8501
 

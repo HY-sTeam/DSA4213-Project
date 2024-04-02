@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+h2ogpte = "==1.4.10"
+mediawikiapi = "*"
+requests = "*"
+arxiv = "*"
+jupyter = "*"
+streamlit = "*"
+boto3 = "*"
+black = "*"
+python-pptx = "*"
+streamlit-authenticator = "*"
+
+[dev-packages]
