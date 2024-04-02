@@ -41,7 +41,7 @@ def try_and_parse(client, user_query, system_prompt, llm='mistralai/Mixtral-8x7B
         failed+=1
         print(failed)
         print(e)# CHANGE TO LOGGING STATEMENT
-        return try_and_parse(user_query, function, failed=failed, markdown=markdown)
+        return try_and_parse(client, user_query, system_prompt, markdown=markdown, failed=failed+1)
 
 
 def create_collection(client: H2OGPTE) -> str:
@@ -51,23 +51,28 @@ def create_collection(client: H2OGPTE) -> str:
         description='Papers',
     )
 
-def ingest_files_in_dir(client: H2OGPTE, collection_id, path="src/websearch/temp_results"):
+def ingest_files_in_dir(client: H2OGPTE, collection_id, path="app/src/websearch/temp_results"):
     all_files = os.listdir(path)
     txt_files = [f"{path}/{file}" for file in all_files if file.endswith('.txt')]
     pdf_files = [f"{path}/{file}" for file in all_files if file.endswith('.pdf')]
     all_files = txt_files.copy()
     all_files.extend(pdf_files)
 
+
+    
     
     print(all_files)
-    
-    opened_files = [open(file, "rb") for file in all_files if file.endswith(".txt") or file.endswith(".pdf")]
+    to_ingest = []
+    for file in all_files:
+        if file.endswith(".txt") or file.endswith(".pdf"):
+            try:
+                opened = open(file, "rb")
+                client.upload(file.split("/")[-1], opened)
+                file.close()
+            except Exception as e:
+                print(e) #
 
-    for i in range(len(opened_files)):
-        all_files[i] = client.upload(all_files[i], opened_files[i])
-        opened_files[i].close()
-
-    return client.ingest_uploads(collection_id, all_files)
+    return client.ingest_uploads(collection_id, to_ingest)
     
 
 if __name__ == "__main__":
