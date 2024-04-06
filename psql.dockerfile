@@ -16,5 +16,6 @@ USER postgres
 # Expose the PostgreSQL port
 EXPOSE 5432
 
+
 # Run PostgreSQL when the container launches
 CMD ["postgres"]

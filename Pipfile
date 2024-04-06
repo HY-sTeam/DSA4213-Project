@@ -14,5 +14,6 @@ boto3 = "*"
 black = "*"
 python-pptx = "*"
 streamlit-authenticator = "*"
+psycopg2 = "*"
 
 [dev-packages]
