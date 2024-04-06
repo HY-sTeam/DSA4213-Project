@@ -16,6 +16,14 @@ RUN pipenv install --deploy
 # RUN pipenv run pip freeze > requirements.txt
 # RUN pip3 install -r requirements.txt
 
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Expose the port on which the application will run. In this case, streamlit runs on 8501
 EXPOSE 8501
 
