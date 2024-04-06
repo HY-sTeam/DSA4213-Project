@@ -16,19 +16,12 @@ RUN pipenv install
 # RUN pipenv run pip freeze > requirements.txt
 # RUN pip3 install -r requirements.txt
 
-# Install system dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        libpq-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 # Expose the port on which the application will run. In this case, streamlit runs on 8501
 EXPOSE 8501
 
 # Define the command to run the application
-ENTRYPOINT ["pipenv", "run", "streamlit", "run", "app/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# ENTRYPOINT ["pipenv", "run", "streamlit", "run", "app/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["pipenv", "run", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
