@@ -29,12 +29,10 @@ def format_into_readable_list(ls: list[str]) -> str:
         ls[i] = f"{i+1}." + ls[i] 
     return "\n".join(ls)
 
-def decide_slide_titles(client: H2OGPTE, presentation_desc: str, information: list[str]) -> list[str]:
-    sys = f"""You are an assistant whose task is to help a user in creating a presentation. {presentation_desc}. 
-    Here are some papers/article titles to help you decide on slide titles:\n{format_into_readable_list(information)}"""
+def decide_slide_titles(client: H2OGPTE, presentation_desc: str) -> list[str]:
+    sys = f"""You are an assistant whose task is to help a user in creating a presentation about {presentation_desc}. """
 
-    user = """You are provided with a list of article/paper titles. 
-    Using these articles, you will create a presentation. 
+    user = f"""You will create a presentation about {presentation_desc}.
     1. Explain how you would design the presentation slides such that the presentation will flow well.
     2. Think of a suitable title for this presentation.
     3. Then, plan your slides and give me your slide titles in a json array within a code chunk. Include the title slide, which is the title for the presentation.
@@ -61,7 +59,7 @@ def decide_slide_titles(client: H2OGPTE, presentation_desc: str, information: li
 
 
 def decide_ppt_colour(client: H2OGPTE, presentation_desc: str) -> list[dict]:
-    formatted = f"""{presentation_desc} Think of a good background colour, in RGB format,\
+    formatted = f"""Your task is to decide on good colours for a presentation about {presentation_desc}. Think of a good background colour, in RGB format,\
         for the slides and a good colour, also in RGB format, for the\
         text. Typically, if the text colour is bright (for example RGB [255, 255, 255] is white), then the background colour should be dark
         (RGB [0, 0, 100] is dark blue). Conversely, if the text colour is dark (for example RGB [0, 0, 0] is black), the background colour should be bright\
@@ -100,8 +98,7 @@ def generate_ppt(
         client: H2OGPTE, 
         chat_session_id, 
         slide_titles: list[str],
-        presentation_desc: str, 
-        user_decided_colours: dict=dict(),
+        user_decided_colours: list[dict],
         llm: str="mistralai/Mixtral-8x7B-Instruct-v0.1"
         ):
     
@@ -110,8 +107,8 @@ def generate_ppt(
     prs.slide_height = Inches(9)
     title_slide = prs.slides.add_slide(prs.slide_layouts[0])
     
-    if not user_decided_colours:
-        colours = decide_ppt_colour(client, presentation_desc)
+    if user_decided_colours:
+        colours = user_decided_colours
         background = RGBColor(
             *tuple(list(
                 colours[0].values()        

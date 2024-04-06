@@ -5,7 +5,8 @@ import re
 
 
 def start_client():
-
+    if not os.environ.get('H2OGPTE_API_KEY'):
+        raise Exception("NO API KEY")
     return H2OGPTE(
         address="https://h2ogpte.genai.h2o.ai",
         api_key=os.environ.get('H2OGPTE_API_KEY')
@@ -51,16 +52,13 @@ def create_collection(client: H2OGPTE) -> str:
         description='Papers',
     )
 
-def ingest_files_in_dir(client: H2OGPTE, collection_id, path="app/src/websearch/temp_results"):
+def ingest_files_in_dir(client: H2OGPTE, collection_id, path="src/websearch/temp_results"):
     all_files = os.listdir(path)
     txt_files = [f"{path}/{file}" for file in all_files if file.endswith('.txt')]
     pdf_files = [f"{path}/{file}" for file in all_files if file.endswith('.pdf')]
     all_files = txt_files.copy()
     all_files.extend(pdf_files)
 
-
-    
-    
     print(all_files)
     to_ingest = []
     for file in all_files:
@@ -68,7 +66,7 @@ def ingest_files_in_dir(client: H2OGPTE, collection_id, path="app/src/websearch/
             try:
                 opened = open(file, "rb")
                 client.upload(file.split("/")[-1], opened)
-                file.close()
+                opened.close()
             except Exception as e:
                 print(e) #
 
