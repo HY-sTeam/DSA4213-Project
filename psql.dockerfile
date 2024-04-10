@@ -2,12 +2,12 @@
 FROM postgres:latest
 
 # Set the environment variables
-ENV POSTGRES_DB=mydatabase
-ENV POSTGRES_USER=myuser
-ENV POSTGRES_PASSWORD=mypassword
+# ENV POSTGRES_DB=mydatabase
+# ENV POSTGRES_USER=myuser
+# ENV POSTGRES_PASSWORD=mypassword
 
 # Copy initialization script
-COPY db_scripts /docker-entrypoint-initdb.d
+# COPY db_scripts /docker-entrypoint-initdb.d
 
 # RUN chmod +x /docker-entrypoint-psqldb.sh
 
