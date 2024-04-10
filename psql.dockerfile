@@ -7,9 +7,9 @@ ENV POSTGRES_USER=myuser
 ENV POSTGRES_PASSWORD=mypassword
 
 # Copy initialization script
-COPY ./docker-entrypoint-psqldb.sh /
+COPY db_scripts /docker-entrypoint-initdb.d
 
-RUN chmod +x /docker-entrypoint-psqldb.sh
+# RUN chmod +x /docker-entrypoint-psqldb.sh
 
 USER postgres
 
