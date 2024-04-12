@@ -7,8 +7,17 @@ from pptx.dml.color import RGBColor
 from pptx.util import Cm, Pt, Inches
 
 from src.llm.lang import query, create_collection, start_client, ingest_files_in_dir
-from src.llm.pptx import generate_ppt, decide_ppt_colour, decide_slide_titles, gen_key_words
+from src.llm.pptgen import generate_ppt, decide_ppt_colour, decide_slide_titles, gen_key_words
 from src.websearch.search import clear_dir, download_papers, download_wikis, search_arxiv, search_wiki
+
+# Function to download the prs generated 
+def get_binary_file_downloader_html(ppt, file_label='Download PowerPoint Presentation', file_name='presentation.pptx'):
+    ppt_bytes = BytesIO()
+    ppt.save(ppt_bytes)
+    ppt_bytes.seek(0)
+    b64 = base64.b64encode(ppt_bytes.read()).decode()
+    href = f'<a href="data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,{b64}" download="{file_name}">{file_label}</a>'
+    return href
 
 def main():
     # Set page title and favicon
@@ -57,6 +66,7 @@ def main():
             st.write("Generating PPT...")
             prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
             status.update(label="Done!", state="complete", expanded=False)
+            st.markdown(get_binary_file_downloader_html(prs), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

@@ -52,7 +52,7 @@ def create_collection(client: H2OGPTE) -> str:
         description='Papers',
     )
 
-def ingest_files_in_dir(client: H2OGPTE, collection_id, path="src/websearch/temp_results"):
+def ingest_files_in_dir(client: H2OGPTE, collection_id, path="app/src/websearch/temp_results"):
     all_files = os.listdir(path)
     txt_files = [f"{path}/{file}" for file in all_files if file.endswith('.txt')]
     pdf_files = [f"{path}/{file}" for file in all_files if file.endswith('.pdf')]
