@@ -14,11 +14,17 @@ services:
       - postgres
     env_file:
       - .env
+
   postgres:
     restart: always
     build:
       context: .
       dockerfile: psql.dockerfile
+    environment: 
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
     env_file:
       - .env
     environment: 
@@ -29,8 +35,12 @@ services:
       - "5432:5432"
     volumes:
       - ./db_scripts:/docker-entrypoint-initdb.d
+
+      # - postgres-data:/var/lib/postgresql/data
     networks:
       - dsa4213_ppt_gen
+
+
   pgadmin:
     image: dpage/pgadmin4
     ports:
@@ -41,4 +51,9 @@ services:
     depends_on: 
       - postgres
     networks:
+
       - dsa4213_ppt_gen
+
+# volumes:
+#   postgres-data:
+

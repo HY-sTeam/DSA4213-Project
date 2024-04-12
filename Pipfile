@@ -13,7 +13,8 @@ streamlit = "*"
 boto3 = "*"
 black = "*"
 python-pptx = "*"
-streamlit-authenticator = "*"
 psycopg2 = "*"
+python-dotenv = "*"
+pyyaml = "*"
 
 [dev-packages]
