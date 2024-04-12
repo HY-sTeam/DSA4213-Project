@@ -6,8 +6,9 @@ FROM postgres:latest
 # ENV POSTGRES_USER=myuser
 # ENV POSTGRES_PASSWORD=mypassword
 
-# Copy initialization script
+# Copy initialization script(no longer needed since volume mapping is done in docker-compose)
 # COPY ./docker-entrypoint-psqldb.sh /
+
 
 # RUN chmod +x /docker-entrypoint-psqldb.sh
 

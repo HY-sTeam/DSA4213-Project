@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Ensure the script has execute permissions
-chmod +x /docker-entrypoint.sh
+# chmod +x /docker-entrypoint-initdb.d/docker-entrypoint.sh
 
 # Error handling - exit immediately if any command fails
 set -e
