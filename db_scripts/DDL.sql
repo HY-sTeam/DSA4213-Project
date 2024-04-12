@@ -19,8 +19,8 @@ CREATE TABLE Slides (
 
 -- Create Temps table for OTP management
 CREATE TABLE Temps (
-    time_otp TIMESTAMP DEFAULT CURRENT TIMESTAMP, 
+    time_otp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     otp CHAR(6) NOT NULL, 
-    email REFERENCES Users(email), 
+    email TEXT REFERENCES Users(email), 
     PRIMARY KEY (time_otp, email)
 );
