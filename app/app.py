@@ -1,10 +1,8 @@
-import streamlit as st
-
-from src.websearch.search import clear_dir
 import base64
 import os
 import random
 import re
+from base64 import b64encode
 from datetime import date, datetime, timedelta
 from io import BytesIO
 
@@ -15,32 +13,14 @@ import src.login_helper as lg
 import streamlit as st
 from pptx import Presentation
 from pptx.dml.color import RGBColor
-from pptx.util import Cm, Pt, Inches
-from base64 import b64encode
-from src.llm.lang import (
-    query,
-    create_collection,
-    start_client,
-    ingest_files_in_dir,
-    clear_all_collections,
-    clear_all_documents,
-    clear_all_pending_uploads
-)
-from src.llm.pptgen import (
-    generate_ppt,
-    decide_ppt_colour,
-    decide_slide_titles,
-    gen_key_words,
-)
-from src.websearch.search import (
-    clear_dir,
-    download_papers,
-    download_wikis,
-    search_arxiv,
-    search_wiki,
-)
-
 from pptx.util import Cm, Inches, Pt
+from src.llm.lang import (clear_all_collections, clear_all_documents,
+                          clear_all_pending_uploads, create_collection,
+                          ingest_files_in_dir, query, start_client)
+from src.llm.pptgen import (decide_ppt_colour, decide_slide_titles,
+                            gen_key_words, generate_ppt)
+from src.websearch.search import (clear_dir, download_papers, download_wikis,
+                                  search_arxiv, search_wiki)
 
 # Initialize session state variables
 if 'user_input' not in st.session_state:
@@ -232,55 +212,139 @@ def main():
             else:
                 st.session_state.wants_wiki = True # if nothing choose, we will return general search
 
-    # Main content
-    st.title("Main Title")
-    # Add main content elements
-    # Example: st.write("Hello, world!")
-    wants_arxiv = wants_wiki = True
-    user_input = st.text_input("I want to create a presentation about:", max_chars=150)
-    user_request = "I want to create a presentation about " + user_input
-    user_doesnt_care_about_colours = True
-    if st.button("Click me"):
+        # Every form must have a submit button. 
+        submitted = st.form_submit_button("Generate presentation")
+        st.session_state.submitted = submitted
+        if st.session_state.submitted:
+            if st.session_state.user_input == "":
+                # The form is submitted without a topic
+                st.error('Please enter a topic to generate the presentation. ')
+            else: 
+                # shall we do a try-except try case before with st.status???
+                try: 
+                    with st.status('Generating PPT...', expanded=True) as status:
+                        conn =  lg.get_db_connection()
+                        cur = conn.cursor()
+                        # 1st Step: conducting web search
+                        clear_dir()
+                        st.write("Sourcing the web...")
+                        user_request = "I want to create a presentation about " + st.session_state.user_input
+                        client = start_client()
+                        collection_id = create_collection(client)
+                        output = gen_key_words(client, user_request)
+                        if st.session_state.wants_arxiv:
+                            papers = search_arxiv(output)
+                            download_papers(papers)
+                        if st.session_state.wants_wiki:
+                            wikis = search_wiki(output)
+                            download_wikis(wikis)
+                        
+                        # 2nd Step: ingesting information
+                        st.write("Ingesting information...")
+                        ingest_files_in_dir(client, collection_id)
 
-        with st.status("Generating PPT...", expanded=True) as status:
+                        # 3rd Step: implementing design layout and preferences ## if ath like colour, font, can be parsed here and added to above using with argument
+                        st.write("Thinking about design...")
+                        colour_dict = decide_ppt_colour(client, st.session_state.user_input)
+                        list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input)
+                        chat_session_id = client.create_chat_session()
 
-            clear_dir()
-            st.write("Starting up...")
-            client = start_client()
-            clear_all_collections(client)
-            clear_all_documents(client)
-            clear_all_pending_uploads(client)
-            st.write("Scouring the web...")
+                        # 4th Step: Generating PPT
+                        st.write("Generating PPT...")
+                        prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
+                        status.update(label="Done!", state="complete", expanded=False)
+                        st.markdown(get_binary_file_downloader_html(prs), unsafe_allow_html=True)
+                        # <store_prs_to_db_fn>
 
-            collection_id = create_collection(client)
-            output = gen_key_words(client, user_request)
+                        cur.close()
+                        conn.close()
 
-            if wants_arxiv:
-                papers = search_arxiv(output)
-                download_papers(papers)
-            if wants_wiki:
-                wikis = search_wiki(output)
-                download_wikis(wikis)
+                except Exception as e: 
+                    st.error("Sth wrong! try again. ")
 
-            st.write("Ingesting information...")
-            ingest_files_in_dir(client, collection_id)
-            st.write("Thinking about design...")
+    # # Main content
+    # st.title("Main Title")
+    # # Add main content elements
+    # # Example: st.write("Hello, world!")
+    # wants_arxiv = wants_wiki = True
+    # user_input = st.text_input("I want to create a presentation about:", max_chars=150)
+    # user_request = "I want to create a presentation about " + user_input
+    # user_doesnt_care_about_colours = True
+    # if st.button("Click me"):
+
+    #     with st.status("Generating PPT...", expanded=True) as status:
+
+    #         clear_dir()
+    #         st.write("Starting up...")
+    #         client = start_client()
+    #         clear_all_collections(client)
+    #         clear_all_documents(client)
+    #         clear_all_pending_uploads(client)
+    #         st.write("Scouring the web...")
+
+    #         collection_id = create_collection(client)
+    #         output = gen_key_words(client, user_request)
+
+    #         if wants_arxiv:
+    #             papers = search_arxiv(output)
+    #             download_papers(papers)
+    #         if wants_wiki:
+    #             wikis = search_wiki(output)
+    #             download_wikis(wikis)
+
+    #         st.write("Ingesting information...")
+    #         ingest_files_in_dir(client, collection_id)
+    #         st.write("Thinking about design...")
             
-            colour_dict = decide_ppt_colour(client, user_input)
+    #         colour_dict = decide_ppt_colour(client, user_input)
 
-            files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
+    #         files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
 
-            list_of_slide_titles = decide_slide_titles(client, user_input, files)
+    #         list_of_slide_titles = decide_slide_titles(client, user_input, files)
 
-            chat_session_id = client.create_chat_session()
-            st.write("Generating PPT...")
-            prs = generate_ppt(
-                client, chat_session_id, list_of_slide_titles, colour_dict
-            )
-            st.download_button(label="Download File!", data=get_bytes(prs), file_name="Presentation.pptx")
+    #         chat_session_id = client.create_chat_session()
+    #         st.write("Generating PPT...")
+    #         prs = generate_ppt(
+    #             client, chat_session_id, list_of_slide_titles, colour_dict
+    #         )
+    #         st.download_button(label="Download File!", data=get_bytes(prs), file_name="Presentation.pptx")
 
-            status.update(label="Done!", state="complete", expanded=True)
+    #         status.update(label="Done!", state="complete", expanded=True)
 
+def history():
+    st.title("Session History Records")
+    conn =  lg.get_db_connection()
+    cur = conn.cursor()
+    data = load_data(st.session_state.email)
+    st.dataframe(data)    
+    cur.close()
+    conn.close()
 
 if __name__ == "__main__":
     main()
+
+# Main Execution
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
+    # login()
+
+st.sidebar.title("Sidebar Title")
+page_names_to_fns = {'Generate Slides': main, 'Past History': history, 
+                     'Login': login, 'Signup': signup}
+selected_page = st.sidebar.selectbox("How about today? ", page_names_to_fns.keys())
+page_names_to_fns[selected_page]()
+
+# Page Routing
+if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
+    login()
+
+# elif st.session_state.page == "signup":
+#     signup()
+# elif st.session_state.page == "main":
+#     main()
+# elif st.session_state.page == "history":
+#     history()
+
+# # Page Routing
+# if st.session_state.page == "main":
+#     main()
