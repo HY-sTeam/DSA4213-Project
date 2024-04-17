@@ -3,6 +3,6 @@
 .env
 
 **/__pycache__/**
-*.txt
-*.pdf
+**/temp_results/**
+!**temp_results/.gitkeep
 dummy.txt

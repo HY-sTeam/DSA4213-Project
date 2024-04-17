@@ -9,9 +9,15 @@ import psycopg2
 
 # Database connection function (fill in your database credentials)
 def get_db_connection():
-    conn = psycopg2.connect(dbname="mydatabase", user="myuser", 
-                            password="mypassword", host="localhost", port="5432")
+    conn = psycopg2.connect(
+        dbname="mydatabase",
+        user="myuser",
+        password="mypassword",
+        host="localhost",
+        port="5432",
+    )
     return conn
+
 
 # Function to check user credentials
 def check_credentials(email, pin):
@@ -22,33 +28,40 @@ def check_credentials(email, pin):
     cur.close()
     conn.close()
     if result:
-        return result[0] == pin # check user input same as db input
+        return result[0] == pin  # check user input same as db input
     else:
         return None
+
 
 def store_otp(email, otp):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("INSERT INTO Temps (otp, email) VALUES (%s, %s)", (otp, email)) # time_otp is default to be curr_time
+    cur.execute(
+        "INSERT INTO Temps (otp, email) VALUES (%s, %s)", (otp, email)
+    )  # time_otp is default to be curr_time
     conn.commit()
     cur.close()
     conn.close()
 
+
 def get_recent_record(email):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Temps WHERE email = %s ORDER BY time_otp DESC LIMIT 1", (email,))
-    record = cur.fetchone() # fetch the most recent row
+    cur.execute(
+        "SELECT * FROM Temps WHERE email = %s ORDER BY time_otp DESC LIMIT 1", (email,)
+    )
+    record = cur.fetchone()  # fetch the most recent row
     cur.close()
     conn.close()
     return record if record else None
 
+
 def send_email(receiver_email, otp):
-    sender_email = 'soowenqiao@gmail.com'
-    app_password = 'lzhmfvtprtrvacgw'
+    sender_email = "soowenqiao@gmail.com"
+    app_password = "lzhmfvtprtrvacgw"
 
     # Create a multipart message
-    subject = 'Slides Generator App - Reset Password'
+    subject = "Slides Generator App - Reset Password"
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
@@ -79,29 +92,42 @@ DSA4213 Rojak Team
     server.sendmail(sender_email, receiver_email, message.as_string())
     server.quit()
 
+
 def send_otp(user_email):
-    otp = str(random.randint(100000, 999999)) # Generate the OTP
+    otp = str(random.randint(100000, 999999))  # Generate the OTP
     send_email(user_email, otp)  # Send the OTP to the user's email
     store_otp(user_email, otp)  # Store the OTP in the database
 
-def verify_otp(user_email, user_otp): # user_otp is user input, stored_otp is in database storage
+
+def verify_otp(
+    user_email, user_otp
+):  # user_otp is user input, stored_otp is in database storage
     record = get_recent_record(user_email)
     curr_time = record[0]
     curr_otp = record[1]
     # user input otp same with stored otp and 10 mins validity period
-    if record and user_otp == curr_otp and (time.time() - time.mktime(curr_time.timetuple()) <= 600):
+    if (
+        record
+        and user_otp == curr_otp
+        and (time.time() - time.mktime(curr_time.timetuple()) <= 600)
+    ):
         # OTP is valid
         return True
     else:
         # OTP is invalid or expired
         return False
-    
+
+
 def update_password(user_email, new_password, user_otp):
-    if verify_otp(user_email, user_otp) is True: # double ensuring the state?? cuz page also has once
+    if (
+        verify_otp(user_email, user_otp) is True
+    ):  # double ensuring the state?? cuz page also has once
         conn = get_db_connection()
         cur = conn.cursor()
-        try: 
-            cur.execute("UPDATE Users SET pin = %s WHERE email = %s", (new_password, user_email))
+        try:
+            cur.execute(
+                "UPDATE Users SET pin = %s WHERE email = %s", (new_password, user_email)
+            )
             conn.commit()
         finally:
             cur.close()
