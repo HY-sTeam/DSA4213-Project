@@ -17,7 +17,7 @@ def search_arxiv(keywords: list[str], limit=2):
 
 def download_papers(papers: list[arxiv.Result]):
     for paper in papers:
-        paper.download_pdf(dirpath="app/src/websearch/temp_results", filename= "Paper_" + paper.title.replace(" ", "_") + '.pdf')
+        paper.download_pdf(dirpath="src/websearch/temp_results", filename= "Paper_" + paper.title.replace(" ", "_") + '.pdf')
 
 def search_wiki(keywords:list[str], limit=2) -> list[WikipediaPage]:
  
@@ -31,7 +31,7 @@ def search_wiki(keywords:list[str], limit=2) -> list[WikipediaPage]:
     return list(map(lambda title: wiki.page(title, auto_suggest=False), to_return))
     
 
-def download_wikis(wikis: list[WikipediaPage], dirpath = "app/src/websearch/temp_results"):   
+def download_wikis(wikis: list[WikipediaPage], dirpath = "src/websearch/temp_results"):   
 
     for wiki in wikis:
         title = "Wiki_" + re.sub('[\W_]+', '_',  wiki.title)
@@ -41,7 +41,7 @@ def download_wikis(wikis: list[WikipediaPage], dirpath = "app/src/websearch/temp
             f.write(wiki.content)
 
 
-def clear_dir(dirpath="app/src/websearch/temp_results"):
+def clear_dir(dirpath="src/websearch/temp_results"):
     all_files = os.listdir(dirpath)
     for file in all_files:
         if file.endswith(".txt") or file.endswith(".pdf"): 
