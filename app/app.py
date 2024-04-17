@@ -51,6 +51,8 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
+if 'bytes' not in st.session_state:
+    st.session_state.bytes = None
 
 # uncomment if u feel unnecessary
 # Function to connect to the database # ok I'll put this here, but it's incl in login_helper.py
@@ -195,7 +197,7 @@ def main():
     st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
 
-    with st.form("my_form"):
+    with st.form("my_form"): # if cant, change here and the below form_submit_button to st.expander("my_form", expanded=False) <-- but the things are working from my site
         col1, col2 = st.columns([3, 1])
         with col1:
             user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=150)
@@ -213,7 +215,7 @@ def main():
                 st.session_state.wants_wiki = True # if nothing choose, we will return general search
 
         # Every form must have a submit button. 
-        submitted = st.form_submit_button("Generate presentation")
+        submitted = st.form_submit_button("Generate presentation") # if the st.form is changed, change here to st.button("Generate presentation")
         st.session_state.submitted = submitted
         if st.session_state.submitted:
             if st.session_state.user_input == "":
@@ -227,9 +229,14 @@ def main():
                         cur = conn.cursor()
                         # 1st Step: conducting web search
                         clear_dir()
-                        st.write("Sourcing the web...")
+                        st.write("Starting up...")
                         user_request = "I want to create a presentation about " + st.session_state.user_input
                         client = start_client()
+                        clear_all_collections(client)
+                        clear_all_documents(client)
+                        clear_all_pending_uploads(client)
+
+                        st.write("Scouring the web...")
                         collection_id = create_collection(client)
                         output = gen_key_words(client, user_request)
                         if st.session_state.wants_arxiv:
@@ -246,16 +253,19 @@ def main():
                         # 3rd Step: implementing design layout and preferences ## if ath like colour, font, can be parsed here and added to above using with argument
                         st.write("Thinking about design...")
                         colour_dict = decide_ppt_colour(client, st.session_state.user_input)
+                        files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
                         list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input)
-                        chat_session_id = client.create_chat_session()
 
                         # 4th Step: Generating PPT
+                        chat_session_id = client.create_chat_session()
                         st.write("Generating PPT...")
                         prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
-                        status.update(label="Done!", state="complete", expanded=False)
-                        st.markdown(get_binary_file_downloader_html(prs), unsafe_allow_html=True)
-                        # <store_prs_to_db_fn>
-
+                        st.session_state.bytes = get_bytes(prs)
+                        st.session_state.title = list_of_slide_titles[0]
+                        st.download_button(label="Download File!", data=st.session_state.bytes, file_name="Presentation.pptx")
+                        status.update(label="Done!", state="complete", expanded=True)
+                        cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes, st.session_state.email))
+                        conn.commit()
                         cur.close()
                         conn.close()
 
