@@ -254,7 +254,7 @@ def main():
                         st.write("Thinking about design...")
                         colour_dict = decide_ppt_colour(client, st.session_state.user_input)
                         files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
-                        list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input)
+                        list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input, files)
 
                         # 4th Step: Generating PPT
                         chat_session_id = client.create_chat_session()
