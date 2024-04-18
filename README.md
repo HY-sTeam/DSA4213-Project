@@ -18,19 +18,20 @@ Once the content is generated and formatted, it is available for users to downlo
 
 ### Functionalities
 Leveraging h2oGPTe as our client, the solution is mainly deployed in an Python environment and dockerised, consisting of the usage of: 
-[X] user queries refinement and keyword generation through Mixtral-v0.1 LLM
-[X] dataset scrapping and data collections with user specific demands
-[X] slides headings, contents and design layout generations
-[X] exporting the slides in .pptx form, enabling download and future slides information retrieval
-[X] database interactions for slides and users details via PostgreSQL
-[X] cleaning filepaths and caches to guarantee application deployment
+[] user queries refinement and keyword generation through Mixtral-v0.1 LLM
+[] dataset scrapping and data collections with user specific demands
+[] slides headings, contents and design layout generations
+[] exporting the slides in .pptx form, enabling download and future slides information retrieval
+[] database interactions for slides and users details via PostgreSQL
+[] cleaning filepaths and caches to guarantee application deployment
 
 We also offer our readers a flavour to exploring around our jupyter notebook for a backend model demonstration purpose. 
 
-### Installation guide.
+### Step-by-Step Manual Guide
 1. Cloning GitHub repository. 
 ```sh
 git clone https://github.com/HY-sTeam/DSA4213-Project
+cd </path/to/the/cloned/github/directory>
 ```
 2. Environment Configuration - put all your environment variables here, u can always refer to sample.env for a list of relevant environment variables used in this project. 
 ```sh 
@@ -53,7 +54,7 @@ jupyter notebook
    - In your terminal, type: `docker-compose up --build`
    - Note that it takes some time for the dockerised process to be well-built. 
    - Once it's done, copy this to your browser to have a look on **streamlit interface**: `http://0.0.0.0:8501`, you can consider to navigate between pages and key in user inputs for any content generation. 
-   - We would also like to have a look on the interactions with database, we can open the Docker Destop app, switch to the container `dsa4213-project-postgres-1` ***exec*** panel. In the ***exec*** panel of the psql container, type accordingly: 
+   - We would also like to have a look on the interactions with **psql database**, we can open the Docker Destop app, switch to the container `dsa4213-project-postgres-1` ***exec*** panel. In the ***exec*** panel of the psql container, type accordingly: 
      - switch yourself to psql shell: `psql -U myuser -d mydatabase` --> The step succeeds if your prompt shows: `mydatabase=#`
      - check database information: `mydatabase=# \conninfo`
      - check relations status: `mydatabase=# \d` --> We should see 3 relations, Users, Slides and Temps here
@@ -66,7 +67,39 @@ exit
 8. Wish you a happy exploring! 🎉🎉🎉
 9. We treasure and welcome any discussion and suggestion for future development of this project. 
 
-## Limitations and Potential Deployment
+<!-- ### Highlights
+<table>
+	<tr>
+		<th width="50%">
+			<p><a title="show-whitespace"></a> Makes whitespace characters visible
+			<p><img src="https://user-images.githubusercontent.com/1402241/61187598-f9118380-a6a5-11e9-985a-990a7f798805.png">
+		<th width="50%">
+			<p><a title="resolve-conflicts"></a> Adds one-click merge conflict fixers
+			<p><img src="https://user-images.githubusercontent.com/1402241/54978791-45906080-4fdc-11e9-8fe1-45374f8ff636.png">
+	<tr>
+		<th width="50%">
+			<p><a title="pr-base-commit"></a> Shows how far behind a PR head branch is + tells you its base commit
+			<p><img src="https://user-images.githubusercontent.com/1402241/234492651-b54bf9ba-c218-4a30-bed4-f85a7f037297.png">
+		<th width="50%">
+			<p><a title="conversation-activity-filter"></a> Lets you hide every event except comments or unresolved comments in issues and PRs
+			<p><img src="https://github-production-user-asset-6210df.s3.amazonaws.com/83146190/252116522-053bce84-5c55-477b-8cc2-42a48104fb02.png">
+	<tr>
+		<th width="50%">
+			<p><a title="status-subscription"></a> Lets you subscribe to opening/closing events of issues in one click
+			<p><img src="https://github-production-user-asset-6210df.s3.amazonaws.com/1402241/238186901-cbc98b51-d173-40c6-b21e-5f0bae3d800c.png">
+		<th width="50%">
+			<p><a title="default-branch-button"></a> Adds a link to the default branch on directory listings and files
+			<p><img src="https://github-production-user-asset-6210df.s3.amazonaws.com/83146190/252176294-9130783c-51aa-4df9-9c35-9b87c179199a.png">
+	<tr>
+		<th width="50%">
+			<p><a title="restore-file"></a> Adds a button to discard all the changes to a file in a PR
+			<p><img src="https://user-images.githubusercontent.com/1402241/236630610-e11a64f6-5e70-4353-89b8-39aae830dd16.gif">
+		<th width="50%">
+			<p><a title="select-notifications"></a> Select notifications by type and status
+			<p><img src="https://user-images.githubusercontent.com/83146190/252175851-e0826d3b-1990-4bff-ba09-71892463818e.gif">
+</table> -->
+
+### Limitations and Potential Deployment
 - expand our search engines from only arxiv and wikipedia to other possibilities, ie google-search
 - collect more user query for configurations to refine our model training procedures, including: 
   - font and color preferences
