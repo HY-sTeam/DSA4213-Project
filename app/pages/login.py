@@ -40,10 +40,10 @@ def login(): # if uncomment this line, all below lines should be right-indented 
         if login:
             credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
             st.session_state.credential_status = credential_status
-            if st.session_state.credential_status is True:
+            if st.session_state.credential_status:
                 st.success('Logged in successfully.')
                 # main()
-            elif st.session_state.credential_status is False:
+            elif not st.session_state.credential_status:
                 st.error('Wrong password. Try again.')
             else: 
                 st.error('Email does not exist. Proceed to signup.')

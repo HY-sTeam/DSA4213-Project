@@ -14,7 +14,7 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 
 st.title('Hello World')
-
+st.error(st.session_state.email)
 # st.title("History")
 # st.subheader("Your past presentations:")
 # # Initialising client for AWS
