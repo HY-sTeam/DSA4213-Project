@@ -58,7 +58,7 @@ if 'bytes' not in st.session_state:
 # Function to connect to the database # ok I'll put this here, but it's incl in login_helper.py
 def get_connection():
     return psycopg2.connect(
-        host="localhost",
+        host="postgre",
         port="5432",
         dbname="mydatabase",
         user="myuser",
