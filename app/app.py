@@ -22,6 +22,9 @@ from src.llm.pptgen import (decide_ppt_colour, decide_slide_titles,
 from src.websearch.search import (clear_dir, download_papers, download_wikis,
                                   search_arxiv, search_wiki)
 
+from pages.login import login
+from pages.signup import signup
+
 # Initialize session state variables
 if 'user_input' not in st.session_state:
     st.session_state.user_input = None
@@ -54,20 +57,10 @@ if 'confirm_password' not in st.session_state:
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 
-# uncomment if u feel unnecessary
-# Function to connect to the database # ok I'll put this here, but it's incl in login_helper.py
-def get_connection():
-    return psycopg2.connect(
-        host="postgre",
-        port="5432",
-        dbname="mydatabase",
-        user="myuser",
-        password="mypassword"
-    )
 
 # Function to load data from the database
 def load_data(email):
-    conn = get_connection()
+    conn = lg.get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
     cursor.execute("SELECT * FROM Slides WHERE email = %s", (email, ))
@@ -101,97 +94,6 @@ st.set_page_config(page_title="Slides Generator", page_icon="🚀",
                         # redirect client to the git repo README.md
                         'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
 
-def signup():
-    conn =  lg.get_db_connection()
-    cur = conn.cursor()
-    with st.expander(key='register', expanded=False):
-        st.write("Signup Here! ")
-        email = st.text_input(label='Enter your email. ', key='signup_email')
-        st.session_state.email = email
-        name = st.text_input(label='Enter your username. ', key='signup_username')
-        st.session_state.name = name
-        password = st.text_input(label='Enter your password. ', type = 'password', key='password')
-        st.session_state.password = password
-        sign_up = st.button('Sign up')
-        if sign_up:
-            # Check if the username already exists
-            cur.execute("SELECT * FROM Users WHERE name = %s", (st.session_state.name,))
-            if cur.fetchone():
-                st.error('Username already exists.')
-                st.session_state.page = "login"
-            else:
-                try: 
-                    cur.execute("INSERT INTO Users (email, name, pin) VALUES (%s, %s, %s)", (st.session_state.email, st.session_state.name, st.session_state.password))
-                    conn.commit()
-                    st.success('User registered successfully. ') # redirect to main page
-                except psycopg2.errors.UniqueViolation as e:
-                    conn.rollback()
-                    st.error('User already exists. ')
-                    st.session_state.page = "login" # Redirect to login page
-                except psycopg2.Error as e:
-                    conn.rollback()  # Rollback the transaction
-                    st.error('An error occurred. ')
-    # Close the cursor and connection
-    cur.close()
-    conn.close()
-
-def login(): # if uncomment this line, all below lines should be right-indented one lot
-    conn = lg.get_db_connection()
-    cur = conn.cursor()
-
-    with st.form(key='usrlogin'):
-        st.write('Login here. ')
-        email = st.text_input(label = 'Enter your email. ', key='login_email')
-        st.session_state.email = email
-        password = st.text_input(label='Enter your password. ', type = 'password', key='login_password')
-        st.session_state.password = password
-        login = st.form_submit_button('Log In')
-        if login:
-            credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
-            st.session_state.credential_status = credential_status
-            if st.session_state.credential_status is True:
-                st.success('Logged in successfully.')
-                # main()
-            elif st.session_state.credential_status is False:
-                st.error('Wrong password. Try again.')
-            else: 
-                st.error('Email does not exist. Proceed to signup.')
-                st.session_state.page = "signup" # Redirect to the signup page. 
-    # Close the cursor and connection
-    # cur.close()
-    # conn.close()
-
-    # def forgot_password(): # if uncomment this line, all lines from here and below should be left-indented first, then right-indented one lot
-    # conn = lg.get_db_connection()
-    # cur = conn.cursor()
-    with st.expander('Forgot password? '):
-        forgot_email = st.text_input("Please key in your email address here. ", key='forgot_email')
-        st.session_state.email = forgot_email
-        if st.session_state.email == "":
-            st.write("Please enter your email! ")
-        if st.button("Send OTP"):
-            try: 
-                lg.send_otp(st.session_state.email) # if otp had been sent
-                # if lg.send_otp(st.session_state.email) is True:
-                st.success("Password reset link has been sent.  Please use the generated OTP in 10 mins. ")
-                otp_tbc = st.text_input("Enter OTP", key='otp')
-                st.session_state.otp_tbc = otp_tbc
-                if lg.verify_otp(st.session_state.email, st.session_state.otp_tbc): # if verify_otp is true
-                    new_password = st.text_input("New password", type='password', key='otppassword')
-                    st.session_state.new_password = new_password
-                    confirm_password = st.text_input("Confirm new password", type='password')
-                    st.session_state.confirm_password = confirm_password
-                    if st.button("Reset password"): 
-                        if st.session_state.confirm_password == st.session_state.new_password:
-                            lg.update_password(st.session_state.email, st.session_state.new_password)
-                            st.success("Password reset successfully. ")
-                        else:
-                            st.error("Passwords do not match. Please re-enter! ")
-                else:
-                    st.error("Invalid OTP or OTP has expired. Please try again. ")
-            except:
-                st.error("Failed to send OTP. Please try again. ")
-
 def main():
     st.title("Slides Generator") # the XXX need to link to session_state shortly
     st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
@@ -216,6 +118,7 @@ def main():
                 
         submitted = st.button("Generate presentation") # if the st.form is changed, change here to st.button("Generate presentation")
         st.session_state.submitted = submitted
+        
     if st.session_state.submitted:
         if st.session_state.user_input == "":
             # The form is submitted without a topic
@@ -283,23 +186,19 @@ if 'page' not in st.session_state:
     st.session_state.page = "login"
     # login()
 
-st.sidebar.title("Sidebar Title")
-page_names_to_fns = {'Generate Slides': main, 'Past History': history, 
-                     'Login': login, 'Signup': signup}
-selected_page = st.sidebar.selectbox("How about today? ", page_names_to_fns.keys())
-page_names_to_fns[selected_page]()
-
 # Page Routing
 if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
     login()
 
 elif st.session_state.page == "signup":
     signup()
+
 elif st.session_state.page == "main":
     main()
-elif st.session_state.page == "history":
-    history()
 
-# Page Routing
-if st.session_state.page == "main":
-    main()
+# elif st.session_state.page == "history":
+#     history()
+
+# # Page Routing
+# if st.session_state.page == "main":
+#     main()
