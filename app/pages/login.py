@@ -55,10 +55,10 @@ def login(): # if uncomment this line, all below lines should be right-indented 
     # def forgot_password(): # if uncomment this line, all lines from here and below should be left-indented first, then right-indented one lot
     # conn = lg.get_db_connection()
     # cur = conn.cursor()
+
     with st.expander('Forgot password? '):
         forgot_email = st.text_input("Please key in your email address here. ")
-        st.session_state.email = forgot_email
-        if st.session_state.email == "":
+        if not forgot_email:
             st.write("Please enter your email! ")
         if st.button("Send OTP"):
             try: 
