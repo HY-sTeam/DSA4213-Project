@@ -98,7 +98,7 @@ def slide_query(
         pre_prompt_query="""You have been provided with the following information, which may be useful in your task. 
         Whenever the user gives you a task, summarise your findings into short sentences and keep your reply to 2 paragraphs""",
         prompt_query="""Decide if the information is relevant, and use it if needed""",
-        message=f"""Generate a short exposition about {slide}, in short sentences. Do not say anything else.""",
+        message=f"""Generate a short exposition about {slide}, in short sentences. You do not need to include a title or anything else unnecessary, just generate the content.""",
     )
     return output.content
 

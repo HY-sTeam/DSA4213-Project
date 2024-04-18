@@ -165,10 +165,11 @@ def main():
                 st.session_state.title = list_of_slide_titles[0]
                 st.download_button(label="Download File!", data=st.session_state.bytes, file_name=f"{list_of_slide_titles[0]}.pptx")
                 status.update(label="Done!", state="complete", expanded=True)
-                cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes.read(), st.session_state.email))
-                conn.commit()
-                cur.close()
-                conn.close()
+                if st.session_state.email:
+                    cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes.read(), st.session_state.email))
+                    conn.commit()
+                    cur.close()
+                    conn.close()
 
 
 def history():
@@ -196,8 +197,6 @@ elif st.session_state.page == "signup":
 elif st.session_state.page == "main":
     main()
 
-# elif st.session_state.page == "history":
-#     history()
 
 # # Page Routing
 # if st.session_state.page == "main":
