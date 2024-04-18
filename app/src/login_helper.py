@@ -3,7 +3,7 @@ import smtplib
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+import pandas as pd
 import psycopg2
 
 
@@ -131,3 +131,19 @@ def update_password(user_email, new_password):
     finally:
         cur.close()
         conn.close()
+
+
+# Function to load data from the database
+def load_data(email):
+    conn = get_db_connection()
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    
+    cursor.execute("SELECT * FROM Slides WHERE email = %s", (email, ))
+    data = cursor.fetchall()
+
+    # Create a pandas DataFrame from the data
+    df = pd.DataFrame(data, columns=[desc[0] for desc in cursor.description])
+    
+    cursor.close()
+    conn.close()
+    return df

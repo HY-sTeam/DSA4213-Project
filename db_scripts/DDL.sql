@@ -10,10 +10,10 @@ CREATE TABLE Users(
 
 -- Create Slides table
 CREATE TABLE Slides (
-    sid SERIAL PRIMARY KEY,
+    -- sid SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     bytes BYTEA NOT NULL,
-    generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     email TEXT REFERENCES Users(email)
 );
 
