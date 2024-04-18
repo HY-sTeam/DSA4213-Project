@@ -13,7 +13,7 @@ def get_db_connection():
         dbname="mydatabase",
         user="myuser",
         password="mypassword",
-        host="postgre",
+        host="postgres",
         port="5432",
     )
     return conn
