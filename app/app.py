@@ -106,11 +106,11 @@ def signup():
     cur = conn.cursor()
     with st.expander(key='register', expanded=False):
         st.write("Signup Here! ")
-        email = st.text_input(label='Enter your email. ')
+        email = st.text_input(label='Enter your email. ', key='signup_email')
         st.session_state.email = email
-        name = st.text_input(label='Enter your username. ')
+        name = st.text_input(label='Enter your username. ', key='signup_username')
         st.session_state.name = name
-        password = st.text_input(label='Enter your password. ', type = 'password')
+        password = st.text_input(label='Enter your password. ', type = 'password', key='password')
         st.session_state.password = password
         sign_up = st.button('Sign up')
         if sign_up:
@@ -141,9 +141,9 @@ def login(): # if uncomment this line, all below lines should be right-indented 
 
     with st.form(key='usrlogin'):
         st.write('Login here. ')
-        email = st.text_input(label = 'Enter your email. ')
+        email = st.text_input(label = 'Enter your email. ', key='login_email')
         st.session_state.email = email
-        password = st.text_input(label='Enter your password. ', type = 'password')
+        password = st.text_input(label='Enter your password. ', type = 'password', key='login_password')
         st.session_state.password = password
         login = st.form_submit_button('Log In')
         if login:
@@ -165,7 +165,7 @@ def login(): # if uncomment this line, all below lines should be right-indented 
     # conn = lg.get_db_connection()
     # cur = conn.cursor()
     with st.expander('Forgot password? '):
-        forgot_email = st.text_input("Please key in your email address here. ")
+        forgot_email = st.text_input("Please key in your email address here. ", key='forgot_email')
         st.session_state.email = forgot_email
         if st.session_state.email == "":
             st.write("Please enter your email! ")
@@ -174,10 +174,10 @@ def login(): # if uncomment this line, all below lines should be right-indented 
                 lg.send_otp(st.session_state.email) # if otp had been sent
                 # if lg.send_otp(st.session_state.email) is True:
                 st.success("Password reset link has been sent.  Please use the generated OTP in 10 mins. ")
-                otp_tbc = st.text_input("Enter OTP")
+                otp_tbc = st.text_input("Enter OTP", key='otp')
                 st.session_state.otp_tbc = otp_tbc
                 if lg.verify_otp(st.session_state.email, st.session_state.otp_tbc): # if verify_otp is true
-                    new_password = st.text_input("New password", type='password')
+                    new_password = st.text_input("New password", type='password', key='otppassword')
                     st.session_state.new_password = new_password
                     confirm_password = st.text_input("Confirm new password", type='password')
                     st.session_state.confirm_password = confirm_password
@@ -197,13 +197,13 @@ def main():
     st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
 
-    with st.form("my_form"): # if cant, change here and the below form_submit_button to st.expander("my_form", expanded=False) <-- but the things are working from my site
+    with st.expander(label="generator", expanded=True):
         col1, col2 = st.columns([3, 1])
         with col1:
-            user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=150)
+            user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=150, key='generation')
             st.session_state.user_input = user_input
         with col2:
-            source = st.selectbox('SOURCE', ['Wikipedia', 'arxiv.org'])
+            source = st.selectbox('SOURCE', ['Wikipedia', 'arxiv.org', 'both'])
             st.session_state.source = source
             if st.session_state.source == 'Wikipedia':
                 st.session_state.wants_arxiv = False
@@ -212,114 +212,61 @@ def main():
                 st.session_state.wants_arxiv = True
                 st.session_state.wants_wiki = False
             else:
-                st.session_state.wants_wiki = True # if nothing choose, we will return general search
-
-        # Every form must have a submit button. 
-        submitted = st.form_submit_button("Generate presentation") # if the st.form is changed, change here to st.button("Generate presentation")
+                st.session_state.wants_wiki = st.session_state.wants_arxiv = True
+                
+        submitted = st.button("Generate presentation") # if the st.form is changed, change here to st.button("Generate presentation")
         st.session_state.submitted = submitted
-        if st.session_state.submitted:
-            if st.session_state.user_input == "":
-                # The form is submitted without a topic
-                st.error('Please enter a topic to generate the presentation. ')
-            else: 
-                # shall we do a try-except try case before with st.status???
-                try: 
-                    with st.status('Generating PPT...', expanded=True) as status:
-                        conn =  lg.get_db_connection()
-                        cur = conn.cursor()
-                        # 1st Step: conducting web search
-                        clear_dir()
-                        st.write("Starting up...")
-                        user_request = "I want to create a presentation about " + st.session_state.user_input
-                        client = start_client()
-                        clear_all_collections(client)
-                        clear_all_documents(client)
-                        clear_all_pending_uploads(client)
-
-                        st.write("Scouring the web...")
-                        collection_id = create_collection(client)
-                        output = gen_key_words(client, user_request)
-                        if st.session_state.wants_arxiv:
-                            papers = search_arxiv(output)
-                            download_papers(papers)
-                        if st.session_state.wants_wiki:
-                            wikis = search_wiki(output)
-                            download_wikis(wikis)
-                        
-                        # 2nd Step: ingesting information
-                        st.write("Ingesting information...")
-                        ingest_files_in_dir(client, collection_id)
-
-                        # 3rd Step: implementing design layout and preferences ## if ath like colour, font, can be parsed here and added to above using with argument
-                        st.write("Thinking about design...")
-                        colour_dict = decide_ppt_colour(client, st.session_state.user_input)
-                        files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
-                        list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input, files)
-
-                        # 4th Step: Generating PPT
-                        chat_session_id = client.create_chat_session()
-                        st.write("Generating PPT...")
-                        prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
-                        st.session_state.bytes = get_bytes(prs)
-                        st.session_state.title = list_of_slide_titles[0]
-                        st.download_button(label="Download File!", data=st.session_state.bytes, file_name="Presentation.pptx")
-                        status.update(label="Done!", state="complete", expanded=True)
-                        cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes, st.session_state.email))
-                        conn.commit()
-                        cur.close()
-                        conn.close()
-
-                except Exception as e: 
-                    st.error("Sth wrong! try again. ")
-
-    # # Main content
-    # st.title("Main Title")
-    # # Add main content elements
-    # # Example: st.write("Hello, world!")
-    # wants_arxiv = wants_wiki = True
-    # user_input = st.text_input("I want to create a presentation about:", max_chars=150)
-    # user_request = "I want to create a presentation about " + user_input
-    # user_doesnt_care_about_colours = True
-    # if st.button("Click me"):
-
-    #     with st.status("Generating PPT...", expanded=True) as status:
-
-    #         clear_dir()
-    #         st.write("Starting up...")
-    #         client = start_client()
-    #         clear_all_collections(client)
-    #         clear_all_documents(client)
-    #         clear_all_pending_uploads(client)
-    #         st.write("Scouring the web...")
-
-    #         collection_id = create_collection(client)
-    #         output = gen_key_words(client, user_request)
-
-    #         if wants_arxiv:
-    #             papers = search_arxiv(output)
-    #             download_papers(papers)
-    #         if wants_wiki:
-    #             wikis = search_wiki(output)
-    #             download_wikis(wikis)
-
-    #         st.write("Ingesting information...")
-    #         ingest_files_in_dir(client, collection_id)
-    #         st.write("Thinking about design...")
+    if st.session_state.submitted:
+        if st.session_state.user_input == "":
+            # The form is submitted without a topic
+            st.error('Please enter a topic to generate the presentation. ')
+        else: 
             
-    #         colour_dict = decide_ppt_colour(client, user_input)
+            with st.status('Generating PPT...', expanded=True) as status:
+                #conn =  lg.get_db_connection()
+                #cur = conn.cursor()
+                # 1st Step: conducting web search
+                clear_dir()
+                st.write("Starting up...")
+                user_request = "I want to create a presentation about " + st.session_state.user_input
+                client = start_client()
+                clear_all_collections(client)
+                clear_all_documents(client)
+                clear_all_pending_uploads(client)
 
-    #         files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
+                st.write("Scouring the web...")
+                collection_id = create_collection(client)
+                output = gen_key_words(client, user_request)
+                if st.session_state.wants_arxiv:
+                    papers = search_arxiv(output)
+                    download_papers(papers)
+                if st.session_state.wants_wiki:
+                    wikis = search_wiki(output)
+                    download_wikis(wikis)
+                
+                # 2nd Step: ingesting information
+                st.write("Ingesting information...")
+                ingest_files_in_dir(client, collection_id)
 
-    #         list_of_slide_titles = decide_slide_titles(client, user_input, files)
+                # 3rd Step: implementing design layout and preferences ## if ath like colour, font, can be parsed here and added to above using with argument
+                st.write("Thinking about design...")
+                colour_dict = decide_ppt_colour(client, st.session_state.user_input)
+                files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
+                list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input, files)
 
-    #         chat_session_id = client.create_chat_session()
-    #         st.write("Generating PPT...")
-    #         prs = generate_ppt(
-    #             client, chat_session_id, list_of_slide_titles, colour_dict
-    #         )
-    #         st.download_button(label="Download File!", data=get_bytes(prs), file_name="Presentation.pptx")
+                # 4th Step: Generating PPT
+                chat_session_id = client.create_chat_session()
+                st.write("Generating PPT...")
+                prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
+                st.session_state.bytes = get_bytes(prs)
+                st.session_state.title = list_of_slide_titles[0]
+                st.download_button(label="Download File!", data=st.session_state.bytes, file_name="Presentation.pptx")
+                status.update(label="Done!", state="complete", expanded=True)
+                # cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes, st.session_state.email))
+                # conn.commit()
+                # cur.close()
+                # conn.close()
 
-    #         status.update(label="Done!", state="complete", expanded=True)
 
 def history():
     st.title("Session History Records")
@@ -330,8 +277,6 @@ def history():
     cur.close()
     conn.close()
 
-if __name__ == "__main__":
-    main()
 
 # Main Execution
 if 'page' not in st.session_state:

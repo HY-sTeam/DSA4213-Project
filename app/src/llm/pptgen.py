@@ -94,11 +94,11 @@ def slide_query(
             "rag_type": "hyde1",
         },
         llm=llm,
-        system_prompt="You are an assistant whose task is to help a user in summarising a topic neatly. ",
+        system_prompt="You are an assistant whose task is to help a user in summarising a topic neatly. You only output summaries and nothing else.",
         pre_prompt_query="""You have been provided with the following information, which may be useful in your task. 
         Whenever the user gives you a task, summarise your findings into short sentences and keep your reply to 2 paragraphs""",
         prompt_query="""Decide if the information is relevant, and use it if needed""",
-        message=f"""Generate a short exposition about {slide}, in short sentences.""",
+        message=f"""Generate a short exposition about {slide}, in short sentences. Do not say anything else.""",
     )
     return output.content
 
