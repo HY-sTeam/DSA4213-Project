@@ -223,8 +223,8 @@ def main():
         else: 
             
             with st.status('Generating PPT...', expanded=True) as status:
-                #conn =  lg.get_db_connection()
-                #cur = conn.cursor()
+                conn =  lg.get_db_connection()
+                cur = conn.cursor()
                 # 1st Step: conducting web search
                 clear_dir()
                 st.write("Starting up...")
@@ -262,10 +262,10 @@ def main():
                 st.session_state.title = list_of_slide_titles[0]
                 st.download_button(label="Download File!", data=st.session_state.bytes, file_name="Presentation.pptx")
                 status.update(label="Done!", state="complete", expanded=True)
-                # cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes, st.session_state.email))
-                # conn.commit()
-                # cur.close()
-                # conn.close()
+                cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes, st.session_state.email))
+                conn.commit()
+                cur.close()
+                conn.close()
 
 
 def history():
@@ -293,13 +293,13 @@ page_names_to_fns[selected_page]()
 if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
     login()
 
-# elif st.session_state.page == "signup":
-#     signup()
-# elif st.session_state.page == "main":
-#     main()
-# elif st.session_state.page == "history":
-#     history()
+elif st.session_state.page == "signup":
+    signup()
+elif st.session_state.page == "main":
+    main()
+elif st.session_state.page == "history":
+    history()
 
-# # Page Routing
-# if st.session_state.page == "main":
-#     main()
+# Page Routing
+if st.session_state.page == "main":
+    main()
