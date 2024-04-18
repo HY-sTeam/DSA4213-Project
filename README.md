@@ -18,12 +18,12 @@ Once the content is generated and formatted, it is available for users to downlo
 
 ### Functionalities
 Leveraging h2oGPTe as our client, the solution is mainly deployed in an Python environment and dockerised, consisting of the usage of: 
-[] user queries refinement and keyword generation through Mixtral-v0.1 LLM
-[] dataset scrapping and data collections with user specific demands
-[] slides headings, contents and design layout generations
-[] exporting the slides in .pptx form, enabling download and future slides information retrieval
-[] database interactions for slides and users details via PostgreSQL
-[] cleaning filepaths and caches to guarantee application deployment
+- [x] user queries refinement and keyword generation through Mixtral-v0.1 LLM
+- [x] dataset scrapping and data collections with user specific demands
+- [x] generating slides headings, contents and design layout 
+- [x] exporting the slides in .pptx form, enabling download and future slides information retrieval
+- [x] database interactions for slides and users details via PostgreSQL
+- [x] cleaning filepaths and caches to guarantee application deployment
 
 We also offer our readers a flavour to exploring around our jupyter notebook for a backend model demonstration purpose. 
 
