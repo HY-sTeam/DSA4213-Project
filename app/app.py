@@ -301,6 +301,6 @@ elif st.session_state.page == "main":
 elif st.session_state.page == "history":
     history()
 
-# Page Routing
-if st.session_state.page == "main":
-    main()
+# # Page Routing
+# if st.session_state.page == "main":
+#     main()
