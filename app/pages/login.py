@@ -29,30 +29,32 @@ if 'confirm_password' not in st.session_state:
 def login(): # if uncomment this line, all below lines should be right-indented one lot
     conn = lg.get_db_connection()
     cur = conn.cursor()
+    if not (st.session_state.email or st.session_state.credential_status):
+        with st.form(key='usrlogin'):
+            st.write('Login here. ')
+            email = st.text_input(label = 'Enter your email. ')
+            st.session_state.email = email
+            password = st.text_input(label='Enter your password. ', type = 'password')
+            st.session_state.password = password
+            login = st.form_submit_button('Log In')
 
-    with st.form(key='usrlogin'):
-        st.write('Login here. ')
-        email = st.text_input(label = 'Enter your email. ')
-        st.session_state.email = email
-        password = st.text_input(label='Enter your password. ', type = 'password')
-        st.session_state.password = password
-        login = st.form_submit_button('Log In')
+            if login:
+                credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
+                st.session_state.credential_status = credential_status
+                if st.session_state.credential_status:
+                    st.success('Logged in successfully.')
+                    st.session_state.page = "main"
+                    #st.experimental_rerun()
 
-        if login:
-            credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
-            st.session_state.credential_status = credential_status
-            if st.session_state.credential_status:
-                st.success('Logged in successfully.')
-                st.session_state.page = "main"
-                st.experimental_rerun()
-
-                # main()
-            elif not st.session_state.credential_status:
-                st.error('Wrong password. Try again.')
-            else: 
-                st.error('Email does not exist. Proceed to signup.')
-                st.session_state.page = "signup" # Redirect to the signup page.
-                st.experimental_rerun() 
+                    # main()
+                elif not st.session_state.credential_status:
+                    st.error('Wrong password. Try again.')
+                else: 
+                    st.error('Email does not exist. Proceed to signup.')
+                    st.session_state.page = "signup" # Redirect to the signup page.
+                    #st.experimental_rerun() 
+    else:
+        st.success('You are already logged in!')
 
     # Close the cursor and connection
     # cur.close()
@@ -85,7 +87,7 @@ def login(): # if uncomment this line, all below lines should be right-indented 
                             lg.update_password(st.session_state.email, st.session_state.new_password)
                             st.success("Password reset successfully. ")
                             st.session_state.page = "login" # Redirect to the signup page.
-                            st.experimental_rerun()
+                            #st.experimental_rerun()
 
                         else:
                             st.error("Passwords do not match. Please re-enter! ")
