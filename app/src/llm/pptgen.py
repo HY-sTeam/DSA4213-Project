@@ -94,7 +94,7 @@ def slide_query(
             "rag_type": "hyde1",
         },
         llm=llm,
-        system_prompt="You are an assistant whose task is to help a user in summarising a topic neatly. You only output summaries and nothing else.",
+        system_prompt="You are an assistant whose task is to help a user in generating content for a formal report. You only output the content in the form of short sentences and nothing else.",
         pre_prompt_query="""You have been provided with the following information, which may be useful in your task. 
         Whenever the user gives you a task, summarise your findings into short sentences and keep your reply to 2 paragraphs""",
         prompt_query="""Decide if the information is relevant, and use it if needed""",
