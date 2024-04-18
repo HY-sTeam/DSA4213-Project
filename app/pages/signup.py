@@ -7,6 +7,17 @@ import psycopg2
 import src.login_helper as lg
 import streamlit as st
 
+# # Function to establish database connection
+# def connect_to_database():
+#     conn = psycopg2.connect(
+#         dbname="mydatabase",
+#         user="myuser",
+#         password="mypassword",
+#         host="postgres",  # Use the service name defined in Docker Compose
+#         port="5432"
+#     )
+#     return conn
+
 # Initialize session state variables
 if 'email' not in st.session_state:
     st.session_state.email = None

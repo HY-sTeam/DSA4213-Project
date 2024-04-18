@@ -14,6 +14,8 @@ services:
       - postgres
     env_file:
       - .env
+    networks:
+      - dsa4213_ppt_gen
 
   postgres:
     restart: always
@@ -47,7 +49,6 @@ services:
     depends_on: 
       - postgres
     networks:
-
       - dsa4213_ppt_gen
 
 # volumes:
