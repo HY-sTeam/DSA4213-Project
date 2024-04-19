@@ -86,27 +86,7 @@ if 'confirm_password' not in st.session_state:
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 
-# Initialize session state variables # forgot_password()
-# <do the same thing, referring to login and signup, add the prefix>
 
-# # Initialize session state variables # signup()
-# if 'signup_email' not in st.session_state:
-#     st.session_state.signup_email = None
-# if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
-#     st.session_state.name = None
-# if 'signup_password' not in st.session_state:
-#     st.session_state.signup_password = None
-
-
-# if 'email' not in st.session_state:
-#     st.session_state.email = None
-# if 'name' not in st.session_state:
-#     st.session_state.name = None
-# if 'password' not in st.session_state:
-#     st.session_state.password = None
-
-# if 'bytes' not in st.session_state:
-#     st.session_state.bytes = None
 
 
 # Function to load data from the database
@@ -252,7 +232,13 @@ def history():
     cur.close()
     conn.close()
 
+if 'email' in st.session_state and 'credential_status' in st.session_state and 'password' in st.session_state:
+    if st.session_state.credential_status:
+        st.session_state.page = "main"
+    #   FUNCTION TO VERIFY THE EMAIL AND PASSWORD
+    #
 
+    pass
 # Main Execution
 if 'page' not in st.session_state:
     st.session_state.page = "login"
