@@ -10,8 +10,8 @@ import streamlit as st
 # Initialize session state variables
 if 'page' not in st.session_state:
     st.session_state.page = "login"
-if 'credential_status' not in st.session_state:
-    st.session_state.credential_status = None
+# if 'credential_status' not in st.session_state:
+#     st.session_state.credential_status = None
 if 'otp_tbc' not in st.session_state:
     st.session_state.otp_tbc = None
 if 'new_password' not in st.session_state:
@@ -24,7 +24,8 @@ if 'login_button' not in st.session_state:
 # Function to check user credentials
 def check_credentials():
     if st.session_state.login_email == '' or st.session_state.login_password == '':
-        return 'no_mail_no_pin'
+        st.session_state.no_mail_no_pin = False
+        return st.session_state.no_mail_no_pin
     else: 
         conn = lg.get_db_connection()
         cur = conn.cursor()
@@ -51,13 +52,13 @@ def login(): # if uncomment this line, all below lines should be right-indented 
         # st.session_state.login_password = login_password
         login_button = st.form_submit_button('Log In', on_click=check_credentials)
         try:
-            if login_button is True: 
+            if st.session_state.credential_status is True: 
                 st.success('Logged in successfully. ')
                 st.success("Redirecting you to main page... ")
-            elif login_button is False:
+            elif st.session_state.credential_status is False: # not login_button, login_button is False
                 st.error("User password doesn't match. ")
-            elif login_button == 'no_mail_no_pin':
-                st.error("Please enter your email or password. ")
+            elif st.session_state.no_mail_no_pin is False:
+                st.error("Please enter your email and password at the same time! ")
             else:
                 st.error("Email doesn't exist in the database. ")
                 st.error("Redirecting you to signup page... ")

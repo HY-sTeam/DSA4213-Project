@@ -61,6 +61,8 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
+if 'no_mail_no_pin' not in st.session_state:
+    st.session_state.no_mail_no_pin = None
 
 # Initialize session state variables # forgot_password()
 # <do the same thing, referring to login and signup, add the prefix>
