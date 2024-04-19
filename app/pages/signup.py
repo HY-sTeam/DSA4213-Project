@@ -47,7 +47,7 @@ def signup(): # if uncomment this line, all below lines should be right-indented
                 try: 
                     cur.execute("INSERT INTO Users (email, name, pin) VALUES (%s, %s, %s)", (st.session_state.email, st.session_state.name, st.session_state.password))
                     conn.commit()
-                    st.success('User registered successfully. ') # page-redirecting to main page
+                    st.success('User registered successfully. Please head to App to generate your powerpoint! ') # page-redirecting to main page
                     st.session_state.page = "main"
                     # st.experimental_rerun()
 
