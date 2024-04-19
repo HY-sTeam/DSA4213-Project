@@ -24,6 +24,9 @@ from src.llm.pptgen import (decide_ppt_colour, decide_slide_titles,
 from src.websearch.search import (clear_dir, download_papers, download_wikis,
                                   search_arxiv, search_wiki)
 
+# from pages.login import login
+# from pages.signup import signup
+
 # Set page layout
 st.set_page_config(page_title="Slides Generator", page_icon="🚀", 
                     menu_items = {
@@ -35,9 +38,6 @@ st.set_page_config(page_title="Slides Generator", page_icon="🚀",
                         'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
 
 # Initialize session state variables
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
-    login()
 if 'user_input' not in st.session_state:
     st.session_state.user_input = None
 if 'source' not in st.session_state:
@@ -50,10 +50,31 @@ if 'submitted' not in st.session_state:
     st.session_state.submitted = None
 
 # Initialize session state variables # login()
-if 'login_email' not in st.session_state:
-    st.session_state.login_email = None
-if 'login_password' not in st.session_state:
-    st.session_state.login_password = None
+# if 'login_email' not in st.session_state:
+#     st.session_state.login_email = None
+# if 'login_password' not in st.session_state:
+#     st.session_state.login_password = None
+# if 'credential_status' not in st.session_state:
+#     st.session_state.credential_status = None
+# if 'otp_tbc' not in st.session_state:
+#     st.session_state.otp_tbc = None
+# if 'new_password' not in st.session_state:
+#     st.session_state.new_password = None
+# if 'confirm_password' not in st.session_state:
+#     st.session_state.confirm_password = None
+# if 'no_mail_no_pin' not in st.session_state:
+#     st.session_state.no_mail_no_pin = None
+
+# Initialize session state variables # for login() and signup(), can consider to uncomment when doing multipage in one py or multi-py
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
+    # login()
+if 'email' not in st.session_state:
+    st.session_state.email = None
+if 'name' not in st.session_state:
+    st.session_state.name = None
+if 'password' not in st.session_state:
+    st.session_state.password = None
 if 'credential_status' not in st.session_state:
     st.session_state.credential_status = None
 if 'otp_tbc' not in st.session_state:
@@ -62,19 +83,19 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
-if 'no_mail_no_pin' not in st.session_state:
-    st.session_state.no_mail_no_pin = None
+if 'bytes' not in st.session_state:
+    st.session_state.bytes = None
 
 # Initialize session state variables # forgot_password()
 # <do the same thing, referring to login and signup, add the prefix>
 
-# Initialize session state variables # signup()
-if 'signup_email' not in st.session_state:
-    st.session_state.signup_email = None
-if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
-    st.session_state.name = None
-if 'signup_password' not in st.session_state:
-    st.session_state.signup_password = None
+# # Initialize session state variables # signup()
+# if 'signup_email' not in st.session_state:
+#     st.session_state.signup_email = None
+# if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
+#     st.session_state.name = None
+# if 'signup_password' not in st.session_state:
+#     st.session_state.signup_password = None
 
 
 # if 'email' not in st.session_state:
@@ -84,8 +105,8 @@ if 'signup_password' not in st.session_state:
 # if 'password' not in st.session_state:
 #     st.session_state.password = None
 
-if 'bytes' not in st.session_state:
-    st.session_state.bytes = None
+# if 'bytes' not in st.session_state:
+#     st.session_state.bytes = None
 
 
 # Function to load data from the database
