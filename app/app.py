@@ -11,8 +11,8 @@ import psycopg2
 import psycopg2.extras
 import src.login_helper as lg
 import streamlit as st
-from pages.login import login
-from pages.signup import signup
+from src.login import login
+from src.signup import signup
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Cm, Inches, Pt
