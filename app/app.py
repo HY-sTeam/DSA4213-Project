@@ -37,6 +37,7 @@ st.set_page_config(page_title="Slides Generator", page_icon="🚀",
 # Initialize session state variables
 if 'page' not in st.session_state:
     st.session_state.page = "login"
+    login()
 if 'user_input' not in st.session_state:
     st.session_state.user_input = None
 if 'source' not in st.session_state:
@@ -201,9 +202,9 @@ def history():
 
 
 # Main Execution
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
-    # login()
+# if 'page' not in st.session_state:
+#     st.session_state.page = "login"
+#     login()
 
 # Page Routing
 if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
@@ -215,6 +216,8 @@ elif st.session_state.page == "signup":
 elif st.session_state.page == "main":
     main()
 
+elif st.session_state.page == "history":
+    history()
 
 # # Page Routing
 # if st.session_state.page == "main":

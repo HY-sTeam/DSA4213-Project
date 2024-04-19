@@ -10,8 +10,8 @@ import streamlit as st
 # Initialize session state variables
 if 'page' not in st.session_state:
     st.session_state.page = "login"
-# if 'credential_status' not in st.session_state:
-#     st.session_state.credential_status = None
+if 'credential_status' not in st.session_state: # comment or uncomment this both line will throw AttributeError
+    st.session_state.credential_status = None
 if 'otp_tbc' not in st.session_state:
     st.session_state.otp_tbc = None
 if 'new_password' not in st.session_state:
@@ -54,34 +54,26 @@ def login(): # if uncomment this line, all below lines should be right-indented 
         try:
             if st.session_state.credential_status is True: 
                 st.success('Logged in successfully. ')
-                st.success("Redirecting you to main page... ")
+                # yeong hui, ur work can be appended here, the below juz a page-redirecting demo
+                with st.spinner("Redirecting you to main page... "):
+                    try:
+                        st.session_state.page = "main"
+                    except Exception as e:
+                        st.error(f"Sorry. There's an {e}. ")
             elif st.session_state.credential_status is False: # not login_button, login_button is False
                 st.error("User password doesn't match. ")
             elif st.session_state.no_mail_no_pin is False:
                 st.error("Please enter your email and password at the same time! ")
             else:
-                st.error("Email doesn't exist in the database. ")
-                st.error("Redirecting you to signup page... ")
+                st.error("Email doesn't exist in the database. Welcome, my ever-first user. ")
+                # yeong hui, ur work can be appended here, the below juz a page-redirecting demo
+                with st.spinner("Redirecting you to signup page... "):
+                    try:
+                        st.session_state.page = "signup"
+                    except Exception as e:
+                        st.error(f"Sorry. There's an {e}. ")
         except:
-            st.error('You are already logged in!')
-        # if login_button:
-        #     st.success('Logged in successfully.')
-        # if login:
-        #     credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
-        #     st.session_state.credential_status = credential_status
-        #     if st.session_state.credential_status:
-        #         st.success('Logged in successfully.')
-        #         st.session_state.page = "main"
-        #         #st.experimental_rerun()
-        #         # main()
-        #     elif st.session_state.credential_status == None:
-        #         st.error('Email does not exist. Proceed to signup.')
-        #         st.session_state.page = "signup" # Redirect to the signup page.
-
-        #     else: 
-        #         st.error('Wrong password. Try again.')
-                
-        #         #st.experimental_rerun() 
+            st.error('You are already logged in! ')
 
     # Close the cursor and connection
     # cur.close()
@@ -128,3 +120,7 @@ def login(): # if uncomment this line, all below lines should be right-indented 
     conn.close()
 
 login()
+
+# Page Routing
+if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
+    login()
