@@ -35,6 +35,8 @@ st.set_page_config(page_title="Slides Generator", page_icon="🚀",
                         'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
 
 # Initialize session state variables
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
 if 'user_input' not in st.session_state:
     st.session_state.user_input = None
 if 'source' not in st.session_state:
@@ -46,15 +48,7 @@ if 'wants_wiki' not in st.session_state:
 if 'submitted' not in st.session_state:
     st.session_state.submitted = None
 
-# Initialize session state variables # for login() and signup(), can consider to uncomment when doing multipage in one py or multi-py
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
-# if 'email' not in st.session_state:
-#     st.session_state.email = None
-# if 'name' not in st.session_state:
-#     st.session_state.name = None
-# if 'password' not in st.session_state:
-#     st.session_state.password = None
+# Initialize session state variables # login()
 if 'login_email' not in st.session_state:
     st.session_state.login_email = None
 if 'login_password' not in st.session_state:
@@ -67,6 +61,26 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
+
+# Initialize session state variables # forgot_password()
+# <do the same thing, referring to login and signup, add the prefix>
+
+# Initialize session state variables # signup()
+if 'signup_email' not in st.session_state:
+    st.session_state.signup_email = None
+if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
+    st.session_state.name = None
+if 'signup_password' not in st.session_state:
+    st.session_state.signup_password = None
+
+
+# if 'email' not in st.session_state:
+#     st.session_state.email = None
+# if 'name' not in st.session_state:
+#     st.session_state.name = None
+# if 'password' not in st.session_state:
+#     st.session_state.password = None
+
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 

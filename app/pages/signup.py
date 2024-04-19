@@ -19,12 +19,12 @@ import streamlit as st
 #     return conn
 
 # Initialize session state variables
-if 'email' not in st.session_state:
-    st.session_state.email = None
-if 'name' not in st.session_state:
-    st.session_state.name = None
-if 'password' not in st.session_state:
-    st.session_state.password = None
+# if 'email' not in st.session_state:
+#     st.session_state.email = None
+# if 'name' not in st.session_state:
+#     st.session_state.name = None
+# if 'password' not in st.session_state:
+#     st.session_state.password = None
 
 def signup(): # if uncomment this line, all below lines should be right-indented one lot
     conn =  lg.get_db_connection()
