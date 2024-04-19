@@ -3,8 +3,10 @@ import smtplib
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
 import pandas as pd
 import psycopg2
+import streamlit as st
 
 
 # Database connection function (fill in your database credentials)
@@ -23,16 +25,16 @@ def get_db_connection():
 def check_credentials(email, pin):
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT pin FROM Users WHERE email = %s", (email,))
+    cur.execute("SELECT * FROM Users WHERE email = %s", (email,))
     result = cur.fetchone()
     cur.close()
     conn.close()
-    if result:
-        return result[0] == pin  # check user input same as db input
-    else:
-        return None
+    if result != None:
+        return result[2] == pin  # check user input same as db input, True if pin matches, False otherwise
+    else: 
+        return None # Email does not exist in the database
 
-
+    
 def store_otp(email, otp):
     conn = get_db_connection()
     cur = conn.cursor()

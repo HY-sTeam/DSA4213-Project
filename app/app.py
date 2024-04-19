@@ -11,6 +11,8 @@ import psycopg2
 import psycopg2.extras
 import src.login_helper as lg
 import streamlit as st
+from pages.login import login
+from pages.signup import signup
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Cm, Inches, Pt
@@ -22,8 +24,15 @@ from src.llm.pptgen import (decide_ppt_colour, decide_slide_titles,
 from src.websearch.search import (clear_dir, download_papers, download_wikis,
                                   search_arxiv, search_wiki)
 
-from pages.login import login
-from pages.signup import signup
+# Set page layout
+st.set_page_config(page_title="Slides Generator", page_icon="🚀", 
+                    menu_items = {
+                        # redirect client to the git repo app-doc
+                        'Get Help': "https://youtu.be/fLexgOxsZu0", 
+                        # redirect client to the mailbox in charge
+                        'Report A Bug': "mailto:soowenqiao@gmail.com",
+                        # redirect client to the git repo README.md
+                        'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
 
 # Initialize session state variables
 if 'user_input' not in st.session_state:
@@ -40,12 +49,16 @@ if 'submitted' not in st.session_state:
 # Initialize session state variables # for login() and signup(), can consider to uncomment when doing multipage in one py or multi-py
 if 'page' not in st.session_state:
     st.session_state.page = "login"
-if 'email' not in st.session_state:
-    st.session_state.email = None
-if 'name' not in st.session_state:
-    st.session_state.name = None
-if 'password' not in st.session_state:
-    st.session_state.password = None
+# if 'email' not in st.session_state:
+#     st.session_state.email = None
+# if 'name' not in st.session_state:
+#     st.session_state.name = None
+# if 'password' not in st.session_state:
+#     st.session_state.password = None
+if 'login_email' not in st.session_state:
+    st.session_state.login_email = None
+if 'login_password' not in st.session_state:
+    st.session_state.login_password = None
 if 'credential_status' not in st.session_state:
     st.session_state.credential_status = None
 if 'otp_tbc' not in st.session_state:
@@ -82,17 +95,6 @@ def get_bytes(
     # b64 = b64encode(ppt_bytes.read()).decode()
     # href = f'<a href="data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,{b64}" download="{file_name}">{file_label}</a>'
     return ppt_bytes
-
-
-# Set page layout
-st.set_page_config(page_title="Slides Generator", page_icon="🚀", 
-                    menu_items = {
-                        # redirect client to the git repo app-doc
-                        'Get Help': "https://youtu.be/fLexgOxsZu0", 
-                        # redirect client to the mailbox in charge
-                        'Report A Bug': "mailto:soowenqiao@gmail.com",
-                        # redirect client to the git repo README.md
-                        'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
 
 def main():
     st.title("Slides Generator") # the XXX need to link to session_state shortly
