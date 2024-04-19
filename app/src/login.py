@@ -61,7 +61,7 @@ def login():
     cur = conn.cursor()
 
 
-    if not (st.session_state.email or st.session_state.credential_status):
+    if not (st.session_state.email and st.session_state.credential_status):
         with st.form(key='usrlogin'):
             st.write('Login here.')
             email = st.text_input(label='Enter your email.')
@@ -77,13 +77,15 @@ def login():
                     st.session_state.page = "main"
                 elif credential_status is False:
                     st.error('Wrong password. Try again.')
+                    st.session_state.page = "login"
 
                 # Edited this line to fix routing problem
                 else:
                     st.error('Email does not exist. Proceed to signup.')
                     st.session_state.page = "signup"
     else:
-        st.success('You are already logged in!')
+        st.success('You are already logged in! Proceeding to the main page...')
+        st.session_state.page = "main"
 
     cur.close()
     conn.close()
@@ -119,9 +121,3 @@ def login():
                 except:
                     st.error("Failed to send OTP. Please try again.")
 
-
-# # Page Routing
-# if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
-#     login()
-
-# login()
