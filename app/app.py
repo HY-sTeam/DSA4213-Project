@@ -118,6 +118,10 @@ def main():
     st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
 
+    # # Link to history page
+    # if st.button("View Session History"):
+    #     history()
+
     with st.expander(label="generator", expanded=True):
         col1, col2 = st.columns([3, 1])
         with col1:
@@ -190,24 +194,51 @@ def main():
                     cur.close()
                     conn.close()
 
+                # 5th Step: After generating the presentation, update the session history
+                st.write("Updating session history...")
+                st.session_state.history_updated = True
+
+    # Expander for viewing past presentations
+    with st.expander(label="View Past Presentations", expanded=True):
+        history()
 
 def history():
     st.title("Session History Records")
-    conn =  lg.get_db_connection()
+    conn = lg.get_db_connection()
     cur = conn.cursor()
     data = load_data(st.session_state.email)
-    st.dataframe(data)    
+    
+    if not data.empty:
+        st.dataframe(data)
+
+        # Add download buttons for each presentation entry
+        for index, row in data.iterrows():
+            bytes_data = row['bytes']
+            title = row['title']
+            file_name = f"{title}.pptx"
+
+            # Convert bytes data to PowerPoint presentation
+            ppt_bytes = BytesIO(bytes_data)
+            ppt_bytes.seek(0)
+
+            # Display a download button for each presentation
+            download_button_label = f"Download {file_name}"
+            st.download_button(label=download_button_label, data=ppt_bytes, file_name=file_name)
+
+    else:
+        st.write("No past presentations found.")
+
     cur.close()
     conn.close()
 
 
 # Main Execution
-# if 'page' not in st.session_state:
-#     st.session_state.page = "login"
-#     login()
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
+
 
 # Page Routing
-if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
+if st.session_state.page == "login":
     login()
 
 elif st.session_state.page == "signup":
@@ -216,9 +247,3 @@ elif st.session_state.page == "signup":
 elif st.session_state.page == "main":
     main()
 
-elif st.session_state.page == "history":
-    history()
-
-# # Page Routing
-# if st.session_state.page == "main":
-#     main()

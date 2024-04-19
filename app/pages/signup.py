@@ -8,7 +8,16 @@ import src.login_helper as lg
 import streamlit as st
 
 
-def signup():
+# Initialize session state variables
+if 'email' not in st.session_state:
+    st.session_state.email = None
+if 'name' not in st.session_state:
+    st.session_state.name = None
+if 'password' not in st.session_state:
+    st.session_state.password = None
+
+def signup(): # if uncomment this line, all below lines should be right-indented one lot
+
     conn =  lg.get_db_connection()
     cur = conn.cursor()
     with st.form(key='register'):
@@ -35,7 +44,8 @@ def signup():
                 except psycopg2.errors.UniqueViolation as e:
                     conn.rollback()
                     st.error('User already exists.')
-                    st.session_state.page = "login" # page-redirecting to login page
+                    st.session_state.page = "login" # Redirect to login page
+
                     # st.experimental_rerun()
 
                 except psycopg2.Error as e:
@@ -46,7 +56,6 @@ def signup():
     cur.close()
     conn.close()
 
-signup()
 
 if st.session_state.page == "signup":
     signup()
