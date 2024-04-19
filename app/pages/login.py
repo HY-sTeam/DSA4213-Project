@@ -75,6 +75,7 @@ def login():
                 if credential_status is True:
                     st.success('Logged in successfully.')
                     st.session_state.page = "main"
+                    st.experimental_rerun()
                 elif credential_status is False:
                     st.error('Wrong password. Try again.')
 
