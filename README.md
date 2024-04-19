@@ -46,11 +46,25 @@ pipenv install --dev
 ```sh
 pipenv shell
 ```
-5. After activating your python virtual environment, do this if you wish to run the python notebook. 
+5. Do this if you wish to run the python notebook after activating your python virtual environment. 
 ```sh
 jupyter notebook
 ```
-6. After activating your python virtual environment, do this if you wish to test out the whole project. 
+6. Do this if you wish to run separate `streamlit.py` after activating your python virtual environment and `docker-compose up --build`. 
+However, it prolly won't work, with most of the time redirecting you to port 8502 but showing *OperationalError* (app.py) or *ModuleNotFoundError* (pages/streamlit.py) in your browser because the filepath during importing only focusing on Docker environment, instead of individual testing purpose. 
+Sometimes, it ***might*** shows *port not responding in your terminal* because the Docker is using streamlit at the same time. 
+We will put the idea here on how to run separate `streamlit.py` as an inspiration for people's interest. 
+
+
+```sh
+# <VS Code toolbar >> Terminal >> New Terminal>
+pipenv install
+pipenv shell
+cd </path/of/directory/streamlit.py>
+streamlit run <streamlit.py>
+# Ctrl + C (Mac OS) to quit
+```
+7. After activating your python virtual environment, do this if you wish to test out the whole project. 
    - In your terminal, type: `docker-compose up --build`
    - Note that it takes some time for the dockerised process to be well-built. 
    - Once it's done, copy this to your browser to have a look on **streamlit interface**: `http://0.0.0.0:8501`, you can consider to navigate between pages and key in user inputs for any content generation. 
@@ -60,12 +74,13 @@ jupyter notebook
      - check relations status: `mydatabase=# \d` --> We should see 3 relations, Users, Slides and Temps here
      - to check each relation: `mydatabase=# SELECT * FROM <RELATION>;`
      - you may consider to perform some SQL here by using some `WHERE` clause to check out if things work successfully. 
-7. To deactivate python pipenv environment:
+   - On your keyboard, press Ctrl+C to quit (Mac OS environment) if you wish to do so. 
+8. To deactivate python pipenv environment:
 ```sh
 exit
 ```
-8. Wish you a happy exploring! 🎉🎉🎉
-9. We treasure and welcome any discussion and suggestion for future development of this project. 
+1. Wish you a happy exploring! 🎉🎉🎉
+2.   We treasure and welcome any discussion and suggestion for future development of this project. 
 
 <!-- ### Highlights
 <table>
