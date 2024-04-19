@@ -4,20 +4,13 @@ import re
 from io import BytesIO
 
 import psycopg2
-# import os
-# import sys
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import src.login_helper as lg
 import streamlit as st
 
 # Initialize session state variables
 if 'page' not in st.session_state:
     st.session_state.page = "login"
-if 'email' not in st.session_state:
-    st.session_state.email = None
-if 'password' not in st.session_state:
-    st.session_state.password = None
-if 'credential_status' not in st.session_state:
+if 'credential_status' not in st.session_state: # comment or uncomment this both line will throw AttributeError
     st.session_state.credential_status = None
 if 'otp_tbc' not in st.session_state:
     st.session_state.otp_tbc = None
@@ -25,10 +18,32 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
+if 'login_button' not in st.session_state:
+    st.session_state.login_button = None
+
+# Function to check user credentials
+def check_credentials():
+    if st.session_state.login_email == '' or st.session_state.login_password == '':
+        st.session_state.no_mail_no_pin = False
+        return st.session_state.no_mail_no_pin
+    else: 
+        conn = lg.get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM Users WHERE email = %s", (st.session_state.login_email,))
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+        if result:
+            # check user input same as db input, True if pin matches, False otherwise, store in credential_status
+            st.session_state.credential_status = (result[2] == st.session_state.login_password)  
+            return st.session_state.credential_status
+        else: 
+            return st.session_state.credential_status # Email does not exist in the database
 
 def login():
     conn = lg.get_db_connection()
     cur = conn.cursor()
+
 
     if not (st.session_state.email or st.session_state.credential_status):
         with st.form(key='usrlogin'):
@@ -75,6 +90,7 @@ def login():
                         confirm_password = st.text_input("Confirm new password", type='password')
                         st.session_state.confirm_password = confirm_password
 
+
                         if st.button("Reset password"):
                             if st.session_state.confirm_password == st.session_state.new_password:
                                 lg.update_password(st.session_state.email, st.session_state.new_password)
@@ -87,4 +103,7 @@ def login():
                 except:
                     st.error("Failed to send OTP. Please try again.")
 
-login()
+
+# Page Routing
+if st.session_state.page == "login": # ideally streamlit shd be initiated to this page
+    login()
