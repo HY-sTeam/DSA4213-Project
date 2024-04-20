@@ -95,10 +95,11 @@ def get_bytes(
     ppt.save(ppt_bytes)
     return ppt_bytes
 
+
 def main():
     st.title("Slides Generator") # the XXX need to link to session_state shortly
     name = lg.get_username(st.session_state.email)
-    st.subheader(f"Welcome to Powerpoint Generator, {name}! We're here to help you generate slides effectively by just one click. :)")
+    st.subheader(f"Welcome to Powerpoint Generator, {name}! Generate slides effectively with just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
 
     with st.expander(label="generator", expanded=True):
@@ -107,7 +108,7 @@ def main():
             user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=100, key='generation')
             st.session_state.user_input = user_input
         with col2:
-            source = st.selectbox('SOURCE', ['Wikipedia', 'arxiv.org', 'both'])
+            source = st.selectbox('SOURCE', ['Wikipedia', 'arxiv.org', 'Both'])
             st.session_state.source = source
             if st.session_state.source == 'Wikipedia':
                 st.session_state.wants_arxiv = False
@@ -126,46 +127,64 @@ def main():
             # The form is submitted without a topic
             st.error('Please enter a topic to generate the presentation. ')
         else: 
-            
+
             with st.status('Generating PPT...', expanded=True) as status:
+                completion = 0
+                bar = st.progress(completion, text="Starting up...")
                 conn =  lg.get_db_connection()
                 cur = conn.cursor()
                 # 1st Step: conducting web search
                 clear_dir()
-                st.write("Starting up...")
+                
                 user_request = "I want to create a presentation about " + st.session_state.user_input
                 client = start_client()
                 clear_all_collections(client)
                 clear_all_documents(client)
                 clear_all_pending_uploads(client)
 
-                st.write("Scouring the web...")
+                completion += 0.1
+                bar.progress(completion, text="Scouring the web...")
+
                 collection_id = create_collection(client)
                 output = gen_key_words(client, user_request)
+
+                completion += 0.1
+                bar.progress(completion, text="Scouring the web...")
+
                 if st.session_state.wants_arxiv:
                     papers = search_arxiv(output)
                     download_papers(papers)
+                completion += 0.15
+                bar.progress(completion, text="Scouring the web...")
                 if st.session_state.wants_wiki:
                     wikis = search_wiki(output)
                     download_wikis(wikis)
+                completion += 0.15
+                bar.progress(completion, text="Scouring the web...")
                 
                 # 2nd Step: ingesting information
-                st.write("Ingesting information...")
                 ingest_files_in_dir(client, collection_id)
+                completion += 0.1
+                bar.progress(completion, text="Thinking about design...")
 
                 # 3rd Step: implementing design layout and preferences ## if ath like colour, font, can be parsed here and added to above using with argument
-                st.write("Thinking about design...")
+
                 colour_dict = decide_ppt_colour(client, st.session_state.user_input)
                 files = [file.split("/")[-1] for file in os.listdir("./src/websearch/temp_results") if file.endswith(".txt") or file.endswith(".pdf")]
                 list_of_slide_titles = decide_slide_titles(client, st.session_state.user_input, files)
+                completion += 0.1
+                bar.progress(completion, text="Ingesting information...")
 
                 # 4th Step: Generating PPT
                 chat_session_id = client.create_chat_session()
-                st.write("Generating PPT...")
-                prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
+                bar.progress(completion, text="Generating PPT...")
+                prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict, bar, completion)
                 st.session_state.bytes = get_bytes(prs)
                 st.session_state.title = list_of_slide_titles[0]
                 
+                completion += 0.25 # incrememnts a total of 0.25 in ppt generation
+                bar.progress(completion, text="Updating history...")
+
                 if st.session_state.email:
                     cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes.read(), st.session_state.email))
                     conn.commit()
@@ -173,7 +192,7 @@ def main():
                     conn.close()
 
                 # 5th Step: After generating the presentation, update the session history
-                st.write("Updating session history...")
+                bar.progress(1.0, text="Completed!")
                 st.session_state.history_updated = True
                 st.download_button(label="Download File!", data=st.session_state.bytes, file_name=f"{list_of_slide_titles[0]}.pptx")
                 status.update(label="Done!", state="complete", expanded=True)

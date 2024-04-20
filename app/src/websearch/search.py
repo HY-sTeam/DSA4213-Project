@@ -1,4 +1,5 @@
 import arxiv
+import streamlit as st
 from mediawikiapi import MediaWikiAPI, WikipediaPage
 import re
 import os
@@ -17,10 +18,10 @@ def search_arxiv(keywords: list[str], limit=2):
     return results  # list of papers to be downloaded.
 
 
-def download_papers(papers: list[arxiv.Result]):
+def download_papers(papers: list[arxiv.Result], dirpath="src/websearch/temp_results"):
     for paper in papers:
         paper.download_pdf(
-            dirpath="src/websearch/temp_results",
+            dirpath=dirpath,
             filename="Paper_" + paper.title.replace(" ", "_") + ".pdf",
         )
 
@@ -35,7 +36,7 @@ def search_wiki(keywords: list[str], limit=2) -> list[WikipediaPage]:
     return list(map(lambda title: wiki.page(title, auto_suggest=False), to_return))
 
 
-def download_wikis(wikis: list[WikipediaPage], dirpath="src/websearch/temp_results"):
+def download_wikis(wikis: list[WikipediaPage],  dirpath="src/websearch/temp_results"):
 
     for wiki in wikis:
         title = "Wiki_" + re.sub("[\W_]+", "_", wiki.title)
