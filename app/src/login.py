@@ -2,7 +2,7 @@ import datetime
 import random
 import re
 from io import BytesIO
-
+import time
 import psycopg2
 import src.login_helper as lg
 import streamlit as st
@@ -48,10 +48,11 @@ def login():
                 else:
                     credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
                     if credential_status is True:
-                        st.success('Logged in successfully.')
+                        st.success('Logged in successfully. Loading application...')
                         # update name
                         st.session_state.name = lg.get_name(st.session_state.email)
                         st.session_state.page = "main"
+                        time.sleep(2)
                         st.rerun()
                      
 
