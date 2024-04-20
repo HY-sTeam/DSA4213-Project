@@ -21,6 +21,16 @@ def get_db_connection():
     return conn
 
 
+def get_username(email):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM Users WHERE email = %s", (email,))
+    result = cur.fetchone()
+    cur.close()
+    conn.close()
+    if result != None:
+        return result[0]
+
 # Function to check user credentials
 def check_credentials(email, pin):
     conn = get_db_connection()
@@ -31,8 +41,7 @@ def check_credentials(email, pin):
     conn.close()
     if result != None:
         return result[2] == pin  # check user input same as db input, True if pin matches, False otherwise
-    else: 
-        return None # Email does not exist in the database
+    # no need for else
 
     
 def store_otp(email, otp):

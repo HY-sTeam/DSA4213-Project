@@ -47,6 +47,9 @@ if 'submitted' not in st.session_state:
     st.session_state.submitted = None
 
 # Initialize session state variables # for login() and signup(), can consider to uncomment when doing multipage in one py or multi-py
+if 'is_logged_in' not in st.session_state:
+    st.session_state.is_logged_in = False
+
 if 'page' not in st.session_state:
     st.session_state.page = "login"
     # login()
@@ -86,24 +89,22 @@ def load_data(email):
 
 # Function to download the prs generated
 def get_bytes(
-    ppt, file_name="presentation.pptx"
+    ppt
 ):
     ppt_bytes = BytesIO()
     ppt.save(ppt_bytes)
-    # ppt_bytes.seek(0)
-    # b64 = b64encode(ppt_bytes.read()).decode()
-    # href = f'<a href="data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,{b64}" download="{file_name}">{file_label}</a>'
     return ppt_bytes
 
 def main():
     st.title("Slides Generator") # the XXX need to link to session_state shortly
-    st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
+    name = lg.get_username(st.session_state.email)
+    st.subheader(f"Welcome to Powerpoint Generator, {name}! We're here to help you generate slides effectively by just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
 
     with st.expander(label="generator", expanded=True):
         col1, col2 = st.columns([3, 1])
         with col1:
-            user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=150, key='generation')
+            user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=100, key='generation')
             st.session_state.user_input = user_input
         with col2:
             source = st.selectbox('SOURCE', ['Wikipedia', 'arxiv.org', 'both'])
@@ -164,8 +165,7 @@ def main():
                 prs = generate_ppt(client, chat_session_id, list_of_slide_titles, colour_dict)
                 st.session_state.bytes = get_bytes(prs)
                 st.session_state.title = list_of_slide_titles[0]
-                st.download_button(label="Download File!", data=st.session_state.bytes, file_name=f"{list_of_slide_titles[0]}.pptx")
-                status.update(label="Done!", state="complete", expanded=True)
+                
                 if st.session_state.email:
                     cur.execute("INSERT INTO Slides (title, bytes, email) VALUES (%s, %s, %s)", (st.session_state.title, st.session_state.bytes.read(), st.session_state.email))
                     conn.commit()
@@ -173,8 +173,10 @@ def main():
                     conn.close()
 
                 # 5th Step: After generating the presentation, update the session history
-                st.write("Updated session history...")
+                st.write("Updating session history...")
                 st.session_state.history_updated = True
+                st.download_button(label="Download File!", data=st.session_state.bytes, file_name=f"{list_of_slide_titles[0]}.pptx")
+                status.update(label="Done!", state="complete", expanded=True)
 
     # Expander for viewing past presentations
     with st.expander(label="View Past Presentations", expanded=True):
@@ -208,44 +210,29 @@ def history():
     cur.close()
     conn.close()
 
-if 'email' in st.session_state and 'credential_status' in st.session_state and 'password' in st.session_state:
-    if st.session_state.credential_status:
-        st.session_state.page = "main"
-    #   FUNCTION TO VERIFY THE EMAIL AND PASSWORD
-    #
 
-    pass
 
-# # Main Execution
-# if 'page' not in st.session_state:
-#     st.session_state.page = "login"
-# Initialize session state for authentication and page navigation if not already set
 
-## the below are xy's fixes
-if 'is_logged_in' not in st.session_state:
-    st.session_state.is_logged_in = False
-if 'page' not in st.session_state:
-    st.session_state.page = 'login'  # Set default page to login
 
-# Navigation buttons
 if st.session_state.is_logged_in:
-    if st.button('Logout'):
-        st.session_state.is_logged_in = False
-        st.session_state.page = 'login'
-        st.experimental_rerun()
-else:
-    if st.session_state.page == 'login':
-        if st.button('Signup'):
-            st.session_state.page = 'signup'
-            st.experimental_rerun()
+    st.session_state.page = "main"
+    
 
 
 # Page Routing
 if st.session_state.page == "login":
     login()
+    if st.button('Signup'):
+            st.session_state.page = 'signup'
+            st.rerun()
 
 elif st.session_state.page == "signup":
     signup()
 
 elif st.session_state.page == "main":
     main()
+    if st.button('Logout'):
+        st.session_state.is_logged_in = False
+        st.session_state.email = st.session_state.name = st.session_state.password = None
+        st.session_state.page = 'login'
+        st.rerun()

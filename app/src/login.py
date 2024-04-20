@@ -24,8 +24,8 @@ if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
 
 def login():
-    st.title("Welcome to Presentation Generator")
-    st.write("Please login to your account to begin generating presentations")
+    st.title("Welcome!")
+    st.write("Please log in to your account to begin generating presentations")
     conn = lg.get_db_connection()
     cur = conn.cursor()
 
