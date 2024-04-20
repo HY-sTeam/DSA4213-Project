@@ -9,8 +9,6 @@ import streamlit as st
 
 
 # Initialize session state variables
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
 if 'email' not in st.session_state:
     st.session_state.email = None
 if 'name' not in st.session_state:
@@ -30,7 +28,7 @@ def signup(): # if uncomment this line, all below lines should be right-indented
         st.session_state.name = name
         password = st.text_input(label='Enter your password. ', type = 'password')
         st.session_state.password = password
-        sign_up = st.form_submit_button('Sign up')
+        sign_up = st.form_submit_button('Submit')
 
         # st.write("Signup Here! ")
         # st.text_input(label='Enter your email. ', key='signup_email')
@@ -39,45 +37,44 @@ def signup(): # if uncomment this line, all below lines should be right-indented
         # sign_up = st.form_submit_button('Sign up')
 
         if sign_up:
-            # Check if the username already exists
-            cur.execute("SELECT * FROM Users WHERE name = %s", (st.session_state.name,))
-            if cur.fetchone():
-                st.error('Username already exists.')
-                st.session_state.page = "signup"
-                # st.experimental_rerun()
+            # Check if any required fields are empty
+            if not st.session_state.email or not st.session_state.name or not st.session_state.password:
+                st.error('Please fill in all fields.')
             else:
-                try: 
-                    cur.execute("INSERT INTO Users (email, name, pin) VALUES (%s, %s, %s)", (st.session_state.email, st.session_state.name, st.session_state.password))
-                    conn.commit()
-                    st.success('User registered successfully. Please head to App to generate your powerpoint! ') # page-redirecting to main page
-                    st.session_state.page = "main"
-                    st.experimental_rerun()
+                # Check if the email already exists
+                cur.execute("SELECT * FROM Users WHERE email = %s", (st.session_state.email,))
+                if cur.fetchone():
+                    st.error('User already exists. Please return to login page by clicking on "Submit" button.')
+                    st.session_state.page = "login"  # Set page state to login
+                    # st.rerun()
 
-                except psycopg2.errors.UniqueViolation as e:
-                    conn.rollback()
-                    st.error('User already exists.')
-                    st.session_state.page = "signup" # Redirect to login page
+                    
+                else:
+                    # Check if the username already exists
+                    cur.execute("SELECT * FROM Users WHERE name = %s", (st.session_state.name,))
+                    if cur.fetchone():
+                        st.error('Username is taken. Please register with another username.')
 
-                    # st.experimental_rerun()
+                    else:
+                        try:
+                            # Insert the new user into the database
+                            cur.execute("INSERT INTO Users (email, name, pin) VALUES (%s, %s, %s)", 
+                                        (st.session_state.email, st.session_state.name, st.session_state.password))
+                            conn.commit()
+                            st.success('User registered successfully. Please proceed by clicking on "Submit" button.')
+                            st.session_state.page = "main"
+                            # st.rerun()
 
-                except psycopg2.Error as e:
-                    conn.rollback()  # Rollback the transaction
-                    st.error('An error occurred. ')
+                        except Exception as e:
+                            conn.rollback()
+                            st.error('An error occurred during signup.')
 
     # Close the cursor and connection
     cur.close()
     conn.close()
 
 
-
-
-if st.session_state.page == "signup":
-    signup()
+# if st.session_state.page == "signup":
+#     signup()
 
 # signup()
-
-# if st.session_state.page == "signup" and 'signup_run' in st.session_state:
-#     signup()
-
-# if st.session_state.get("page") == "signup":
-#     signup()
