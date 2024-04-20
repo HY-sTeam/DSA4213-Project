@@ -24,9 +24,6 @@ from src.llm.pptgen import (decide_ppt_colour, decide_slide_titles,
 from src.websearch.search import (clear_dir, download_papers, download_wikis,
                                   search_arxiv, search_wiki)
 
-# from pages.login import login
-# from pages.signup import signup
-
 # Set page layout
 st.set_page_config(page_title="Slides Generator", page_icon="🚀", 
                     menu_items = {
@@ -48,22 +45,6 @@ if 'wants_wiki' not in st.session_state:
     st.session_state.wants_wiki = None
 if 'submitted' not in st.session_state:
     st.session_state.submitted = None
-
-# Initialize session state variables # login()
-# if 'login_email' not in st.session_state:
-#     st.session_state.login_email = None
-# if 'login_password' not in st.session_state:
-#     st.session_state.login_password = None
-# if 'credential_status' not in st.session_state:
-#     st.session_state.credential_status = None
-# if 'otp_tbc' not in st.session_state:
-#     st.session_state.otp_tbc = None
-# if 'new_password' not in st.session_state:
-#     st.session_state.new_password = None
-# if 'confirm_password' not in st.session_state:
-#     st.session_state.confirm_password = None
-# if 'no_mail_no_pin' not in st.session_state:
-#     st.session_state.no_mail_no_pin = None
 
 # Initialize session state variables # for login() and signup(), can consider to uncomment when doing multipage in one py or multi-py
 if 'page' not in st.session_state:
@@ -118,10 +99,6 @@ def main():
     st.title("Slides Generator") # the XXX need to link to session_state shortly
     st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
-
-    # # Link to history page
-    # if st.button("View Session History"):
-    #     history()
 
     with st.expander(label="generator", expanded=True):
         col1, col2 = st.columns([3, 1])
@@ -196,7 +173,7 @@ def main():
                     conn.close()
 
                 # 5th Step: After generating the presentation, update the session history
-                st.write("Updating session history...")
+                st.write("Updated session history...")
                 st.session_state.history_updated = True
 
     # Expander for viewing past presentations
@@ -238,9 +215,29 @@ if 'email' in st.session_state and 'credential_status' in st.session_state and '
     #
 
     pass
-# Main Execution
+
+# # Main Execution
+# if 'page' not in st.session_state:
+#     st.session_state.page = "login"
+# Initialize session state for authentication and page navigation if not already set
+
+## the below are xy's fixes
+if 'is_logged_in' not in st.session_state:
+    st.session_state.is_logged_in = False
 if 'page' not in st.session_state:
-    st.session_state.page = "login"
+    st.session_state.page = 'login'  # Set default page to login
+
+# Navigation buttons
+if st.session_state.is_logged_in:
+    if st.button('Logout'):
+        st.session_state.is_logged_in = False
+        st.session_state.page = 'login'
+        st.experimental_rerun()
+else:
+    if st.session_state.page == 'login':
+        if st.button('Signup'):
+            st.session_state.page = 'signup'
+            st.experimental_rerun()
 
 
 # Page Routing
