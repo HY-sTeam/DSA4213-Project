@@ -57,6 +57,8 @@ if 'confirm_password' not in st.session_state:
 #             return st.session_state.credential_status # Email does not exist in the database
 
 def login():
+    st.title("Welcome to Presentation Generator")
+    st.write("Please login to your account to begin generating presentations")
     conn = lg.get_db_connection()
     cur = conn.cursor()
 
