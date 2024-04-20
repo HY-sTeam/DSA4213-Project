@@ -49,8 +49,11 @@ def login():
                     credential_status = lg.check_credentials(st.session_state.email, st.session_state.password)
                     if credential_status is True:
                         st.success('Logged in successfully.')
+                        # update name
+                        st.session_state.name = lg.get_name(st.session_state.email)
                         st.session_state.page = "main"
                         st.rerun()
+                     
 
                     elif credential_status is False:
                         st.error('Wrong password. Try again.')
