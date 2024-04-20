@@ -2,7 +2,7 @@ import datetime
 import random
 import re
 from io import BytesIO
-
+import time
 import psycopg2
 import src.login_helper as lg
 import streamlit as st
@@ -30,12 +30,6 @@ def signup(): # if uncomment this line, all below lines should be right-indented
         st.session_state.password = password
         sign_up = st.form_submit_button('Submit')
 
-        # st.write("Signup Here! ")
-        # st.text_input(label='Enter your email. ', key='signup_email')
-        # st.text_input(label='Enter your username. ', key='name')
-        # st.text_input(label='Enter your password. ', type = 'password', key='signup_password')
-        # sign_up = st.form_submit_button('Sign up')
-
         if sign_up:
             # Check if any required fields are empty
             if not st.session_state.email or not st.session_state.name or not st.session_state.password:
@@ -44,9 +38,10 @@ def signup(): # if uncomment this line, all below lines should be right-indented
                 # Check if the email already exists
                 cur.execute("SELECT * FROM Users WHERE email = %s", (st.session_state.email,))
                 if cur.fetchone():
-                    st.error('User already exists. Please return to login page by clicking on "Submit" button.')
+                    st.error('User already exists. Returning to login page...')
                     st.session_state.page = "login"  # Set page state to login
-                    # st.rerun()
+                    time.sleep(2)
+                    st.rerun()
 
                     
                 else:
@@ -61,9 +56,10 @@ def signup(): # if uncomment this line, all below lines should be right-indented
                             cur.execute("INSERT INTO Users (email, name, pin) VALUES (%s, %s, %s)", 
                                         (st.session_state.email, st.session_state.name, st.session_state.password))
                             conn.commit()
-                            st.success('User registered successfully. Please proceed by clicking on "Submit" button.')
+                            st.success('User registered successfully. Loading application...')
                             st.session_state.page = "main"
-                            # st.rerun()
+                            time.sleep(2)
+                            st.rerun()
 
                         except Exception as e:
                             conn.rollback()

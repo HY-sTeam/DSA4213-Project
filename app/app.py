@@ -97,12 +97,11 @@ def get_bytes(
 
 
 def main():
-    st.title("Slides Generator") # the XXX need to link to session_state shortly
-    name = lg.get_username(st.session_state.email)
-    st.subheader(f"Welcome to Powerpoint Generator, {name}! Generate slides effectively with just one click. :)")
-    st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
-
-    with st.expander(label="generator", expanded=True):
+    st.title("Slides Generator")
+    st.subheader(f"Welcome, {st.session_state.name}, to the Powerpoint Generator!")
+    st.subheader("We're here to help you generate slides with just one click :)")
+    st.write("This is a AY23/24 Sem2 DSA4213 project, by Team Rojak.")
+    with st.expander(label="Generator", expanded=True):
         col1, col2 = st.columns([3, 1])
         with col1:
             user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=100, key='generation')
