@@ -210,7 +210,6 @@ def history():
     data = load_data(st.session_state.email)
     
     if not data.empty:
-        st.dataframe(data)
 
         # Add download buttons for each presentation entry
         for index, row in data.iterrows():
@@ -253,4 +252,3 @@ elif st.session_state.page == "signup":
 
 elif st.session_state.page == "main":
     main()
-
