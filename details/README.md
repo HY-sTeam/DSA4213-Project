@@ -37,12 +37,11 @@ pipenv streamlit run <page.py> # streamlit run <streamlit.py>
 - **Remark**:  If you're done with that, proceed to do `pipenv run <page.py>` or `streamlit run <page.py>` to see the effect. 
 
 ## Docker Testing
-As mentioned in the main `README.md`. 
+As mentioned in the main `README.md`. Also, you would have to consider to clean your Docker environment by removing containers, images, volumes and caches relevant to this project to avoid system collapse. 
 
 ## Errors
 - You may potentially encounter several errors upon testing. if you didn't do your own psql container but wish to test separate `.py`. Being redirected to port 8502, the webpage shows: 
 1. *OperationalError* (app.py) because the psql port is not listening to the streamlit 
 2. *ModuleNotFoundError* (pages/streamlit.py) because the imported filepath at the head of `.py` focusing only to Docker environment. 
 3. *port not responding in your terminal* because the Docker is using streamlit at the same time. 
-
 - 

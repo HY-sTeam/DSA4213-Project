@@ -60,7 +60,10 @@ note that it takes some time for the dockerised process to be well-built, around
 docker-compose up --build
 # alternatively: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --no-cache docker-compose up
 ```
+
+
 We can observe the interactions of frontend, backend and database via streamlit interface [left panel] and psql container ***Exec*** panel [right panel] simultaneously. 
+
 
 4. **Insights from Browser**
 Once it's done, copy `http://0.0.0.0:8501` to have a look on **streamlit interface**. 
@@ -89,18 +92,23 @@ We treasure and welcome any discussions and suggestions for future development o
 
 If it's a happy Sunday, the person in charge will prolly refer you to [this song](https://youtu.be/fLexgOxsZu0) heiheihei.
 
+
+
 Warmest Regards, 
 DSA4213 Rojak Team
 AY2324 SEM 2
 
 Instructor: Dr. Vishal Sharma
+
 Fellow Members: Sum Hung Yee, Soo Wen Qiao, Chua Yeong Hui, Wong Xin Ying, Ng Zheng Li, Ng Keen Yung
 
 ## Limitations and Potential Deployment
 - Expanding our search engines from only arxiv and wikipedia to other possibilities, ie google-search
-- Exploring other potential Large Language Model, ie OpenAI API, as stated in the Appendix of `SlidesGenerator.ipynb`
+- Exploring other potential Large Language Models, ie OpenAI API, as stated in the Appendix of `SlidesGenerator.ipynb`
+- Cloud database storage instead of session database storage, 
 - Collecting more user query for configurations to refine our model training procedures, including: 
   - font and color preferences
+  - slides content exceeding slide layout issue (currently we still require users to manually fix it)
   - slides length 
   - images illustrations
 - Allowing non-registered people to generate slides but not storing their slides
@@ -108,6 +116,7 @@ Fellow Members: Sum Hung Yee, Soo Wen Qiao, Chua Yeong Hui, Wong Xin Ying, Ng Zh
   - In `db_scripts/DDL.sql`, add new line: `INSERT Users VALUES (dsa4213@gmail.com, admin, 4213_RojaK);`
   - In `app/app.py`, config new condition: if login_click with no values, all user details will be set with the above entries
 
+## Demonstration of App Functionalities using `.gif`
 <!-- ### Highlights
 <table>
 	<tr>
