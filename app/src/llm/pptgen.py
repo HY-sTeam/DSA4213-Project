@@ -108,8 +108,11 @@ def generate_ppt(
     chat_session_id,
     slide_titles: list[str],
     user_decided_colours: list[dict],
+    bar,
+    completion: float,
     llm: str = "mistralai/Mixtral-8x7B-Instruct-v0.1",
 ):
+    increment = 0.25/len(slide_titles)
 
     prs = Presentation()
     prs.slide_width = Inches(16)
@@ -182,5 +185,7 @@ def generate_ppt(
                 shapes[1].top,
                 (prs.slide_width - new_width) // 2,
             )
+            completion += increment
+            bar.progress(completion, "Generating PPT...")
 
     return prs

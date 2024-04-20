@@ -2,7 +2,7 @@ from h2ogpte import H2OGPTE, Session
 import json
 import os
 import re
-
+import random
 
 def start_client():
     if not os.environ.get("H2OGPTE_API_KEY"):
@@ -23,7 +23,7 @@ def query(
         question=user_query,
         system_prompt=system_prompt,
         llm=llm,
-        llm_args=dict(temperature=0.25),
+        llm_args=dict(temperature=0.2 + random.random()/10),
     ).content
 
 

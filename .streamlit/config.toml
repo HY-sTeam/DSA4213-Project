@@ -4,6 +4,7 @@ showErrorDetails = false
 [theme]
 primaryColor = "#F63366"
 backgroundColor = "black"
+secondaryBackgroundColor = "#33007B"
 
 [global]
 
