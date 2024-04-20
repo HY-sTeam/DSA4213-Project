@@ -52,7 +52,7 @@ def login():
                         # update name
                         st.session_state.name = lg.get_name(st.session_state.email)
                         st.session_state.page = "main"
-                        time.sleep(2)
+                        time.sleep(1)
                         st.rerun()
                      
 
