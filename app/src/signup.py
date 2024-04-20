@@ -9,6 +9,8 @@ import streamlit as st
 
 
 # Initialize session state variables
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
 if 'email' not in st.session_state:
     st.session_state.email = None
 if 'name' not in st.session_state:
@@ -41,7 +43,7 @@ def signup(): # if uncomment this line, all below lines should be right-indented
             cur.execute("SELECT * FROM Users WHERE name = %s", (st.session_state.name,))
             if cur.fetchone():
                 st.error('Username already exists.')
-                st.session_state.page = "login"
+                st.session_state.page = "signup"
                 # st.experimental_rerun()
             else:
                 try: 
@@ -49,12 +51,12 @@ def signup(): # if uncomment this line, all below lines should be right-indented
                     conn.commit()
                     st.success('User registered successfully. Please head to App to generate your powerpoint! ') # page-redirecting to main page
                     st.session_state.page = "main"
-                    # st.experimental_rerun()
+                    st.experimental_rerun()
 
                 except psycopg2.errors.UniqueViolation as e:
                     conn.rollback()
                     st.error('User already exists.')
-                    st.session_state.page = "login" # Redirect to login page
+                    st.session_state.page = "signup" # Redirect to login page
 
                     # st.experimental_rerun()
 
@@ -67,7 +69,15 @@ def signup(): # if uncomment this line, all below lines should be right-indented
     conn.close()
 
 
+
+
 if st.session_state.page == "signup":
     signup()
 
-signup()
+# signup()
+
+# if st.session_state.page == "signup" and 'signup_run' in st.session_state:
+#     signup()
+
+# if st.session_state.get("page") == "signup":
+#     signup()

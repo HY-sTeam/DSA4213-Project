@@ -1,3 +1,14 @@
+import streamlit as st
+# Set page layout
+st.set_page_config(page_title="Slides Generator", page_icon="🚀", 
+                    menu_items = {
+                        # redirect client to the git repo app-doc
+                        'Get Help': "https://youtu.be/fLexgOxsZu0", 
+                        # redirect client to the mailbox in charge
+                        'Report A Bug': "mailto:soowenqiao@gmail.com",
+                        # redirect client to the git repo README.md
+                        'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
+
 import base64
 import os
 import random
@@ -10,9 +21,8 @@ import pandas as pd
 import psycopg2
 import psycopg2.extras
 import src.login_helper as lg
-import streamlit as st
 from src.login import login
-from pages.signup import signup
+from src.signup import signup
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Cm, Inches, Pt
@@ -27,15 +37,7 @@ from src.websearch.search import (clear_dir, download_papers, download_wikis,
 # from pages.login import login
 # from pages.signup import signup
 
-# Set page layout
-st.set_page_config(page_title="Slides Generator", page_icon="🚀", 
-                    menu_items = {
-                        # redirect client to the git repo app-doc
-                        'Get Help': "https://youtu.be/fLexgOxsZu0", 
-                        # redirect client to the mailbox in charge
-                        'Report A Bug': "mailto:soowenqiao@gmail.com",
-                        # redirect client to the git repo README.md
-                        'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
+
 
 # Initialize session state variables
 if 'user_input' not in st.session_state:
@@ -86,27 +88,7 @@ if 'confirm_password' not in st.session_state:
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 
-# Initialize session state variables # forgot_password()
-# <do the same thing, referring to login and signup, add the prefix>
 
-# # Initialize session state variables # signup()
-# if 'signup_email' not in st.session_state:
-#     st.session_state.signup_email = None
-# if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
-#     st.session_state.name = None
-# if 'signup_password' not in st.session_state:
-#     st.session_state.signup_password = None
-
-
-# if 'email' not in st.session_state:
-#     st.session_state.email = None
-# if 'name' not in st.session_state:
-#     st.session_state.name = None
-# if 'password' not in st.session_state:
-#     st.session_state.password = None
-
-# if 'bytes' not in st.session_state:
-#     st.session_state.bytes = None
 
 
 # Function to load data from the database
@@ -252,10 +234,45 @@ def history():
     cur.close()
     conn.close()
 
+if 'email' in st.session_state and 'credential_status' in st.session_state and 'password' in st.session_state:
+    if st.session_state.credential_status:
+        st.session_state.page = "main"
+    #   FUNCTION TO VERIFY THE EMAIL AND PASSWORD
+    #
 
-# Main Execution
+    pass
+
+# Navigation buttons
+# if st.button('Home'):
+#     st.session_state.page = 'main'
+#     st.experimental_rerun()
+
+# if st.button('signup'):
+#     st.session_state.page = 'signup'
+#     st.experimental_rerun()
+
+# Initialize session state for authentication and page navigation if not already set
+if 'is_logged_in' not in st.session_state:
+    st.session_state.is_logged_in = False
 if 'page' not in st.session_state:
-    st.session_state.page = "login"
+    st.session_state.page = 'login'  # Set default page to login
+
+# Navigation buttons
+# if st.session_state.is_logged_in:
+#     if st.button('Logout'):
+#         st.session_state.is_logged_in = False
+#         st.session_state.page = 'login'
+#         st.experimental_rerun()
+# else:
+if st.session_state.page == 'login':
+    if st.button('Signup'):
+        st.session_state.page = 'signup'
+        st.experimental_rerun()
+
+# # Main Execution
+# if 'page' not in st.session_state:
+#     st.session_state.page = "login"
+    
 
 
 # Page Routing
@@ -263,8 +280,8 @@ if st.session_state.page == "login":
     login()
 
 elif st.session_state.page == "signup":
+    print("Current page: signup") 
     signup()
 
 elif st.session_state.page == "main":
     main()
-
