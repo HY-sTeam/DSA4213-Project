@@ -116,7 +116,7 @@ Fellow Members: Sum Hung Yee, Soo Wen Qiao, Chua Yeong Hui, Wong Xin Ying, Ng Zh
   - In `app/app.py`, config new condition: if login_click with no values, all user details will be set with the above entries
 
 ## Demonstration of App Functionalities using `.gif`
-<!-- ### Highlights
+
 <table>
 	<tr>
 		<th width="50%">
@@ -146,4 +146,3 @@ Fellow Members: Sum Hung Yee, Soo Wen Qiao, Chua Yeong Hui, Wong Xin Ying, Ng Zh
 		<th width="50%">
 			<p><a title="select-notifications"></a> Select notifications by type and status
 			<p><img src="https://user-images.githubusercontent.com/83146190/252175851-e0826d3b-1990-4bff-ba09-71892463818e.gif">
-</table> -->
