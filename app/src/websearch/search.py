@@ -1,8 +1,9 @@
+import os
+import re
+
 import arxiv
 import streamlit as st
 from mediawikiapi import MediaWikiAPI, WikipediaPage
-import re
-import os
 
 
 def search_arxiv(keywords: list[str], limit=2):
@@ -45,9 +46,8 @@ def download_wikis(wikis: list[WikipediaPage],  dirpath="src/websearch/temp_resu
         with open(dirpath_appended, "w+", encoding="utf-8") as f:
             f.write(wiki.content)
 
-
 def clear_dir(dirpath="src/websearch/temp_results"):
     all_files = os.listdir(dirpath)
     for file in all_files:
-        if file.endswith(".txt") or file.endswith(".pdf"):
+        if not file.endswith(".gitkeep"):
             os.remove(f"{dirpath}/{file}")
