@@ -68,24 +68,11 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
-<<<<<<< HEAD
-if 'no_mail_no_pin' not in st.session_state:
-    st.session_state.no_mail_no_pin = None
-
-if 'signup_email' not in st.session_state:
-    st.session_state.signup_email = None
-if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
-    st.session_state.name = None
-if 'signup_password' not in st.session_state:
-    st.session_state.signup_password = None
-=======
->>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 
 
 
-<<<<<<< HEAD
 def load_data(email) -> pd.DataFrame:
     """Loads data given email.
 
@@ -95,11 +82,6 @@ def load_data(email) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Dataframe representing data.
     """    
-=======
-
-# Function to load data from the database
-def load_data(email):
->>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     conn = lg.get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
@@ -113,7 +95,6 @@ def load_data(email):
     return df
 
 # Function to download the prs generated
-<<<<<<< HEAD
 def get_bytes(ppt: ppt.Presentation) -> BytesIO:
     """Get data of a Presentation object in bytes.
 
@@ -124,36 +105,18 @@ def get_bytes(ppt: ppt.Presentation) -> BytesIO:
         BytesIO: Representation of the pptx file in bytes.
     """    
 
-=======
-def get_bytes(
-    ppt
-):
->>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     ppt_bytes = BytesIO()
     ppt.save(ppt_bytes)
     return ppt_bytes
 
 
 def main():
-<<<<<<< HEAD
-    """Main execution
-    """
-
-
-    st.title("Slides Generator")
-    st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
-    st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
-
-
-    with st.expander(label="generator", expanded=True):
-=======
     st.title("Slides Generator")
     st.subheader(f"Welcome, {st.session_state.name}, to the Powerpoint Generator!")
     st.subheader("We're here to help you generate slides with just one click :)")
     st.write("This is a AY23/24 Sem2 DSA4213 project, by Team Rojak.")
 
     with st.expander(label="Generator", expanded=True):
->>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
         col1, col2 = st.columns([3, 1])
         with col1:
             user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=150, key='generation')

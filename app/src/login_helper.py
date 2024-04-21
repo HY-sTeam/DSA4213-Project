@@ -65,7 +65,6 @@ def get_name(email):
     name = cur.fetchone()[1]  # Assuming name is in the second column
     return name    
 
-<<<<<<< HEAD
     
 def store_otp(email: str, otp: str) -> None:
     """Stores one-time-password into the temporary table in the database.
@@ -74,9 +73,6 @@ def store_otp(email: str, otp: str) -> None:
         email (str): user email
         otp (str): one-time-password.
     """
-=======
-def store_otp(email, otp):
->>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(

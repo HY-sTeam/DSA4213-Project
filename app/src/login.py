@@ -24,13 +24,10 @@ if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
 
 def login():
-<<<<<<< HEAD:app/pages/login.py
     """Execute streamlit login page
     """
-=======
     st.title("Welcome!")
     st.write("Please log in to your account to begin generating presentations")
->>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c:app/src/login.py
     conn = lg.get_db_connection()
     cur = conn.cursor()
 
