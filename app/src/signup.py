@@ -69,8 +69,4 @@ def signup(): # if uncomment this line, all below lines should be right-indented
     cur.close()
     conn.close()
 
-
-# if st.session_state.page == "signup":
-#     signup()
-
 # signup()
