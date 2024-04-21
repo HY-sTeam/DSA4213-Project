@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta
 from io import BytesIO
 
 import pandas as pd
+import pptx.presentation as ppt
 import psycopg2
 import psycopg2.extras
 import src.login_helper as lg
@@ -65,31 +66,26 @@ if 'confirm_password' not in st.session_state:
 if 'no_mail_no_pin' not in st.session_state:
     st.session_state.no_mail_no_pin = None
 
-# Initialize session state variables # forgot_password()
-# <do the same thing, referring to login and signup, add the prefix>
-
-# Initialize session state variables # signup()
 if 'signup_email' not in st.session_state:
     st.session_state.signup_email = None
 if 'name' not in st.session_state: # name only appears in signup requiring and processing user input, so idw to be 'signup_name', it can be used in main(), says "Welcome {st.session_state.name}"
     st.session_state.name = None
 if 'signup_password' not in st.session_state:
     st.session_state.signup_password = None
-
-
-# if 'email' not in st.session_state:
-#     st.session_state.email = None
-# if 'name' not in st.session_state:
-#     st.session_state.name = None
-# if 'password' not in st.session_state:
-#     st.session_state.password = None
-
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 
 
-# Function to load data from the database
-def load_data(email):
+
+def load_data(email) -> pd.DataFrame:
+    """Loads data given email.
+
+    Args:
+        email (str): User email
+
+    Returns:
+        pd.DataFrame: Dataframe representing data.
+    """    
     conn = lg.get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
@@ -103,24 +99,29 @@ def load_data(email):
     return df
 
 # Function to download the prs generated
-def get_bytes(
-    ppt, file_name="presentation.pptx"
-):
+def get_bytes(ppt: ppt.Presentation) -> BytesIO:
+    """Get data of a Presentation object in bytes.
+
+    Args:
+        ppt (Presemtation): A python-pptx Presentation object.
+
+    Returns:
+        BytesIO: Representation of the pptx file in bytes.
+    """    
+
     ppt_bytes = BytesIO()
     ppt.save(ppt_bytes)
-    # ppt_bytes.seek(0)
-    # b64 = b64encode(ppt_bytes.read()).decode()
-    # href = f'<a href="data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,{b64}" download="{file_name}">{file_label}</a>'
     return ppt_bytes
 
 def main():
-    st.title("Slides Generator") # the XXX need to link to session_state shortly
+    """Main execution
+    """
+
+
+    st.title("Slides Generator")
     st.subheader("Welcome XXX to Powerpoint Generator! We're here to help you generate slides effectively by just one click. :)")
     st.write("This is a 2324S2 DSA4213 project, by Team Rojak. ")
 
-    # # Link to history page
-    # if st.button("View Session History"):
-    #     history()
 
     with st.expander(label="generator", expanded=True):
         col1, col2 = st.columns([3, 1])
@@ -203,6 +204,8 @@ def main():
         history()
 
 def history():
+    """Execute history page
+    """
     st.title("Session History Records")
     conn = lg.get_db_connection()
     cur = conn.cursor()

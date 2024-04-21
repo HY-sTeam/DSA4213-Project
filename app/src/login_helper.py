@@ -11,6 +11,11 @@ import streamlit as st
 
 # Database connection function (fill in your database credentials)
 def get_db_connection():
+    """Connects to the database.
+
+    Returns:
+        A connection.
+    """    
     conn = psycopg2.connect(
         dbname="mydatabase",
         user="myuser",
@@ -22,7 +27,16 @@ def get_db_connection():
 
 
 # Function to check user credentials
-def check_credentials(email, pin):
+def check_credentials(email: str, pin: str):
+    """Check credentials of user for authentication
+
+    Args:
+        email (str): User email.
+        pin (str): User password
+
+    Returns:
+        A boolean value for correct or wrong password, or None if the email does not exist.
+    """    
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT * FROM Users WHERE email = %s", (email,))
@@ -35,7 +49,13 @@ def check_credentials(email, pin):
         return None # Email does not exist in the database
 
     
-def store_otp(email, otp):
+def store_otp(email: str, otp: str) -> None:
+    """Stores one-time-password into the temporary table in the database.
+
+    Args:
+        email (str): user email
+        otp (str): one-time-password.
+    """
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
@@ -47,6 +67,8 @@ def store_otp(email, otp):
 
 
 def get_recent_record(email):
+    """Fetches the most recent record from the Temps table.
+    """
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
@@ -59,6 +81,13 @@ def get_recent_record(email):
 
 
 def send_email(receiver_email, otp):
+    """Sends email containing an otp to users who have lost their password.
+
+    Args:
+        receiver_email (str): Recipient of user with a lost password.
+        otp (str): The one-time-password.
+    """    
+    
     sender_email = "soowenqiao@gmail.com"
     app_password = "lzhmfvtprtrvacgw"
 
@@ -95,7 +124,15 @@ DSA4213 Rojak Team
     server.quit()
 
 
-def send_otp(user_email):
+def send_otp(user_email: str) -> bool:
+    """Randomly generates a one-time-password and stores
+
+    Args:
+        user_email (str): user email.
+
+    Returns:
+        bool: Boolean value for success or failure.
+    """    
     otp = str(random.randint(100000, 999999)) # Generate the OTP
     try: 
         send_email(user_email, otp)  # Send the OTP to the user's email
@@ -107,7 +144,10 @@ def send_otp(user_email):
 
 def verify_otp(
     user_email, user_otp
-):  # user_otp is user input, stored_otp is in database storage
+): 
+    """Verifies a user's OTP.
+    """    
+     # user_otp is user input, stored_otp is in database storage
     record = get_recent_record(user_email)
     curr_time = record[0]
     curr_otp = record[1]
@@ -124,7 +164,9 @@ def verify_otp(
         return False
 
 
-def update_password(user_email, new_password):
+def update_password(user_email: str, new_password: str):
+    """Updates a user's email account with a new password
+    """    
     conn = get_db_connection()
     cur = conn.cursor()
     try: 
@@ -136,7 +178,15 @@ def update_password(user_email, new_password):
 
 
 # Function to load data from the database
-def load_data(email):
+def load_data(email: str) -> pd.DataFrame:
+    """Loads data from the database given an email and returns the data.
+
+    Args:
+        email (str): User email
+
+    Returns:
+        pd.DataFrame: A dataframe consisting of all columns with the user email.
+    """    
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     

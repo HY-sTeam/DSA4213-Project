@@ -16,7 +16,9 @@ if 'name' not in st.session_state:
 if 'password' not in st.session_state:
     st.session_state.password = None
 
-def signup(): # if uncomment this line, all below lines should be right-indented one lot
+def signup():
+    """Execute streamlit signup page.
+    """
 
     conn =  lg.get_db_connection()
     cur = conn.cursor()

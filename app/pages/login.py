@@ -41,6 +41,8 @@ def check_credentials():
             return st.session_state.credential_status # Email does not exist in the database
 
 def login():
+    """Execute streamlit login page
+    """
     conn = lg.get_db_connection()
     cur = conn.cursor()
 
