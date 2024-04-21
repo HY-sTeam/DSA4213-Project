@@ -4,7 +4,7 @@ import json
 import os
 import random
 import re
-
+import random
 
 def start_client() -> H2OGPTE:
     """Connects to H2oGPTE
@@ -44,7 +44,11 @@ def query(
         question=user_query,
         system_prompt=system_prompt,
         llm=llm,
+<<<<<<< HEAD
         llm_args=dict(temperature=0.22+random.random()/10),
+=======
+        llm_args=dict(temperature=0.2 + random.random()/10),
+>>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     ).content
 
 

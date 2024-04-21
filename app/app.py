@@ -12,8 +12,8 @@ import psycopg2
 import psycopg2.extras
 import src.login_helper as lg
 import streamlit as st
-from pages.login import login
-from pages.signup import signup
+from src.login import login
+from src.signup import signup
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.util import Cm, Inches, Pt
@@ -36,9 +36,6 @@ st.set_page_config(page_title="Slides Generator", page_icon="🚀",
                         'About': "https://github.com/HY-sTeam/DSA4213-Project/tree/main"})
 
 # Initialize session state variables
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
-    login()
 if 'user_input' not in st.session_state:
     st.session_state.user_input = None
 if 'source' not in st.session_state:
@@ -50,11 +47,19 @@ if 'wants_wiki' not in st.session_state:
 if 'submitted' not in st.session_state:
     st.session_state.submitted = None
 
-# Initialize session state variables # login()
-if 'login_email' not in st.session_state:
-    st.session_state.login_email = None
-if 'login_password' not in st.session_state:
-    st.session_state.login_password = None
+# Initialize session state variables # for login() and signup(), can consider to uncomment when doing multipage in one py or multi-py
+if 'is_logged_in' not in st.session_state:
+    st.session_state.is_logged_in = False
+
+if 'page' not in st.session_state:
+    st.session_state.page = "login"
+    # login()
+if 'email' not in st.session_state:
+    st.session_state.email = None
+if 'name' not in st.session_state:
+    st.session_state.name = None
+if 'password' not in st.session_state:
+    st.session_state.password = None
 if 'credential_status' not in st.session_state:
     st.session_state.credential_status = None
 if 'otp_tbc' not in st.session_state:
@@ -63,6 +68,7 @@ if 'new_password' not in st.session_state:
     st.session_state.new_password = None
 if 'confirm_password' not in st.session_state:
     st.session_state.confirm_password = None
+<<<<<<< HEAD
 if 'no_mail_no_pin' not in st.session_state:
     st.session_state.no_mail_no_pin = None
 
@@ -72,11 +78,14 @@ if 'name' not in st.session_state: # name only appears in signup requiring and p
     st.session_state.name = None
 if 'signup_password' not in st.session_state:
     st.session_state.signup_password = None
+=======
+>>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
 if 'bytes' not in st.session_state:
     st.session_state.bytes = None
 
 
 
+<<<<<<< HEAD
 def load_data(email) -> pd.DataFrame:
     """Loads data given email.
 
@@ -86,6 +95,11 @@ def load_data(email) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Dataframe representing data.
     """    
+=======
+
+# Function to load data from the database
+def load_data(email):
+>>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     conn = lg.get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
@@ -99,6 +113,7 @@ def load_data(email) -> pd.DataFrame:
     return df
 
 # Function to download the prs generated
+<<<<<<< HEAD
 def get_bytes(ppt: ppt.Presentation) -> BytesIO:
     """Get data of a Presentation object in bytes.
 
@@ -109,11 +124,18 @@ def get_bytes(ppt: ppt.Presentation) -> BytesIO:
         BytesIO: Representation of the pptx file in bytes.
     """    
 
+=======
+def get_bytes(
+    ppt
+):
+>>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     ppt_bytes = BytesIO()
     ppt.save(ppt_bytes)
     return ppt_bytes
 
+
 def main():
+<<<<<<< HEAD
     """Main execution
     """
 
@@ -124,6 +146,14 @@ def main():
 
 
     with st.expander(label="generator", expanded=True):
+=======
+    st.title("Slides Generator")
+    st.subheader(f"Welcome, {st.session_state.name}, to the Powerpoint Generator!")
+    st.subheader("We're here to help you generate slides with just one click :)")
+    st.write("This is a AY23/24 Sem2 DSA4213 project, by Team Rojak.")
+
+    with st.expander(label="Generator", expanded=True):
+>>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
         col1, col2 = st.columns([3, 1])
         with col1:
             user_input = st.text_input('TOPIC', placeholder = 'What do you want to generate today ٩(˃̶͈̀௰˂̶͈́)و ? ', max_chars=150, key='generation')
@@ -196,7 +226,7 @@ def main():
                     conn.close()
 
                 # 5th Step: After generating the presentation, update the session history
-                st.write("Updating session history...")
+                st.write("Updated session history...")
                 st.session_state.history_updated = True
 
     # Expander for viewing past presentations
@@ -212,7 +242,6 @@ def history():
     data = load_data(st.session_state.email)
     
     if not data.empty:
-        st.dataframe(data)
 
         # Add download buttons for each presentation entry
         for index, row in data.iterrows():
@@ -235,18 +264,25 @@ def history():
     conn.close()
 
 
-# Main Execution
-if 'page' not in st.session_state:
-    st.session_state.page = "login"
+if st.session_state.is_logged_in:
+    st.session_state.page = "main"
+    
 
 
 # Page Routing
 if st.session_state.page == "login":
     login()
+    if st.button('Signup'):
+            st.session_state.page = 'signup'
+            st.rerun()
 
 elif st.session_state.page == "signup":
     signup()
 
 elif st.session_state.page == "main":
     main()
-
+    if st.button('Logout'):
+        st.session_state.is_logged_in = False
+        st.session_state.email = st.session_state.name = st.session_state.password = None
+        st.session_state.page = 'login'
+        st.rerun()

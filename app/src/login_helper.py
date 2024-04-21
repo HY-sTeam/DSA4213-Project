@@ -26,6 +26,16 @@ def get_db_connection():
     return conn
 
 
+def get_username(email):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM Users WHERE email = %s", (email,))
+    result = cur.fetchone()
+    cur.close()
+    conn.close()
+    if result != None:
+        return result[0]
+
 # Function to check user credentials
 def check_credentials(email: str, pin: str):
     """Check credentials of user for authentication
@@ -45,9 +55,17 @@ def check_credentials(email: str, pin: str):
     conn.close()
     if result != None:
         return result[2] == pin  # check user input same as db input, True if pin matches, False otherwise
-    else: 
-        return None # Email does not exist in the database
+    # no need for else
 
+# Function to fetch name
+def get_name(email):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM Users WHERE email = %s", (email,))
+    name = cur.fetchone()[1]  # Assuming name is in the second column
+    return name    
+
+<<<<<<< HEAD
     
 def store_otp(email: str, otp: str) -> None:
     """Stores one-time-password into the temporary table in the database.
@@ -56,6 +74,9 @@ def store_otp(email: str, otp: str) -> None:
         email (str): user email
         otp (str): one-time-password.
     """
+=======
+def store_otp(email, otp):
+>>>>>>> ccf256be16372c23c456ccd71990db6d235ab40c
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
