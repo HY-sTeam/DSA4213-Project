@@ -84,13 +84,10 @@ Once it's done, copy `http://0.0.0.0:8501` to have a look on **streamlit interfa
    - [ ] test out individual components of `app.py` and other `pages/page.py` separately, you will need to construct your own psql container here, failing to do so may lead several errors (will be stated in `details/README.md`). 
    - [ ] test out individual components of `src/code.py`. 
 
-## An Optimistics Team
-	
-Wish you a happy exploring! 🎉🎉🎉
 
-We treasure and welcome any discussions and suggestions for future development of this project. You can always drop us an email to us by the right upper ... button >> Report A Bug in our application. 
+Happy exploring! 🎉🎉🎉
 
-If it's a happy Sunday, the person in charge will prolly refer you to [this song](https://youtu.be/fLexgOxsZu0) heiheihei.
+We treasure and welcome any suggestions for future development of this project. You can always drop us an email to us by the right upper ... button >> Report A Bug in our application. 
 
 
 
