@@ -211,9 +211,6 @@ def history():
     conn.close()
 
 
-
-
-
 if st.session_state.is_logged_in:
     st.session_state.page = "main"
     
