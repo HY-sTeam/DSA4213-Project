@@ -130,9 +130,8 @@ def decide_ppt_colour(client: H2OGPTE, presentation_desc: str) -> list[dict]:
 
 
 def slide_query(
-<<<<<<< HEAD
-    session: Session, slide: str, llm="mistralai/Mixtral-8x7B-Instruct-v0.1"
-) -> str:
+    session: Session, slide: str, topic: str, llm="mistralai/Mixtral-8x7B-Instruct-v0.1"
+):
     """Uses an LLM and Retrieval Augmented Generation (RAG) to retrieve information and generate slide content.
 
     Args:
@@ -142,11 +141,7 @@ def slide_query(
 
     Returns:
         str: Slide content.
-    """    
-=======
-    session: Session, slide: str, topic: str, llm="mistralai/Mixtral-8x7B-Instruct-v0.1"
-):
->>>>>>> 850dba80fff542ed203e1831bbe9efece9945dda
+    """ 
     output = session.query(
         rag_config={
             "rag_type": "hyde1",
