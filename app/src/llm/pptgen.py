@@ -87,18 +87,18 @@ def decide_ppt_colour(client: H2OGPTE, presentation_desc: str) -> list[dict]:
 
 
 def slide_query(
-    session: Session, slide: str, llm="mistralai/Mixtral-8x7B-Instruct-v0.1"
+    session: Session, slide: str, topic: str, llm="mistralai/Mixtral-8x7B-Instruct-v0.1"
 ):
     output = session.query(
         rag_config={
             "rag_type": "hyde1",
         },
         llm=llm,
-        system_prompt="You are an assistant whose task is to help a user in generating content for a formal report. You only output the content in the form of short sentences and nothing else.",
+        system_prompt=f"You are a report generator tasked with generating sections in a report. This report is about {topic}. You only output the content in the form of short sentences and nothing else.",
         pre_prompt_query="""You have been provided with the following information, which may be useful in your task. 
         Whenever the user gives you a task, summarise your findings into short sentences and keep your reply to 2 paragraphs""",
         prompt_query="""Decide if the information is relevant, and use it if needed""",
-        message=f"""Generate a short exposition about {slide}, in short sentences. You do not need to include a title or anything else unnecessary, just generate the content.""",
+        message=f"""Generate content about {slide} for this report, in short sentences. You do not need to include a title. Also, only provide the content for the report and do not say anything else""",
     )
     return output.content
 
@@ -157,7 +157,7 @@ def generate_ppt(
             title.text_frame.paragraphs[0].font.size = Pt(32)
             title.text_frame.paragraphs[0].font.name = "Karla"
             # content != contents
-            content = slide_query(session, section, llm=llm)
+            content = slide_query(session, section, slide_titles[0], llm=llm)
             contents.text = content
 
             for paragraph in contents.text_frame.paragraphs:
