@@ -1,4 +1,4 @@
-from h2ogpte import H2OGPTE
+from h2ogpte import H2OGPTE, Session
 from h2ogpte.types import Job
 import json
 import os
@@ -7,7 +7,7 @@ import re
 import random
 
 def start_client() -> H2OGPTE:
-    """Connects to H2oGPTE
+    """Connects to H2OGPTE
 
     Raises:
         Exception: Raised when API key is not provided
