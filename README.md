@@ -105,7 +105,9 @@ Fellow Members: Sum Hung Yee, Soo Wen Qiao, Chua Yeong Hui, Wong Xin Ying, Ng Zh
 ## Limitations and Potential Deployment
 - Expanding our search engines from only arxiv and wikipedia to other possibilities, ie google-search
 - Exploring other potential Large Language Models, ie OpenAI API, as stated in the Appendix of `SlidesGenerator.ipynb`
-- Cloud database storage instead of session database storage, 
+- Runtime limitation comes to our concern since the processing of scrapping data and data ingestion upon model training may consume the user a lot of times. 
+- Cloud database storage instead of session database storage, we didn't mount volume in Docker and connect to our local pc...
+  it's potential to have future attempts in Amazon S3 service and Redis cache or MongoDB. 
 - Collecting more user query for configurations to refine our model training procedures, including: 
   - font and color preferences
   - slides content exceeding slide layout issue (currently we still require users to manually fix it)
