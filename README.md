@@ -66,7 +66,7 @@ We can observe the interactions of frontend, backend and database via streamlit 
 
 
 4. **Insights from Browser**
-Once it's done, listen on `[http://0.0.0.0:8501](http://localhost:8501/)` to have a look on **streamlit interface**. 
+Once it's done, listen on `http://localhost:8501/` to have a look on **streamlit interface**. 
 
 5. **Association with psql container Exec**
 	- on Docker App, click on the psql container, and click the Exec panel, then perform all query operations over there to see a change. 
